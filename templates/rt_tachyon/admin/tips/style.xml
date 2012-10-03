@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<gantrytips>
+	
+	<tip label="Body Level" id="bodylevel"><![CDATA[<strong>The Body Level</strong> setting provides the ability to easily change the level of graphic intensity of the template body elements. Reducing the body level reduces the number of images for a faster and more simplistic look.]]></tip>
+
+	<tip label="Header Style" id="headerstyle"><![CDATA[<strong>The Header Style</strong> option allows you select one of the template's available built in Header color styles.]]></tip>
+	
+	<tip label="Header Link Color" id="headerlink"><![CDATA[<strong>The Header Link Color</strong> setting provides the ability to easily change the link colors for the header area. These can be inputted via the <strong>Colorchooser</strong> popup selector or manually using a hex code in the input field.]]></tip>
+	
+	<tip label="Menu Pill Style" id="menupillstyle"><![CDATA[<strong>The Menu Pill Style</strong> setting provides the ability to easily change the colors used for the active and hover menu pill image. Choose from one of the available color styles.]]></tip>
+	
+	<tip label="Body Text Color" id="bodytext"><![CDATA[<strong>The Body Text Color</strong> setting provides the ability to easily change the text colors for the main body area. These can be inputted via the <strong>Colorchooser</strong> popup selector or manually using a hex code in the input field.]]></tip>
+	
+	<tip label="Body Link Color" id="bodylink"><![CDATA[<strong>The Body Text Color</strong> setting provides the ability to easily change the link colors for the main body area. These can be inputted via the <strong>Colorchooser</strong> popup selector or manually using a hex code in the input field.]]></tip>
+	
+	<tip label="Accent Style" id="accentstyle"><![CDATA[<strong>The Accent Style</strong> option allows you select one of the template's available built in Accent color styles.]]></tip>
+	
+	<tip label="Footer Style" id="footerstyle"><![CDATA[<strong>The Footer Style</strong> option allows you select one of the template's available built in Footer color styles.]]></tip>
+	
+	<tip label="Footer Link Color" id="footerlink"><![CDATA[<strong>The Footer Link Color</strong> setting provides the ability to easily change the link colors for the footer area. These can be inputted via the <strong>Colorchooser</strong> popup selector or manually using a hex code in the input field.]]></tip>
+	
+	<tip label="Module Hovers" id="modulehover"><![CDATA[<strong>The Module Hovers</strong> setting allows you to enable or disable the color and animation hover effects for the box style module variations.]]></tip>
+	
+	<tip label="Read More Style" id="readonstyle"><![CDATA[<strong>The Read More Style</strong> setting allows you to select an available style type for the display of read more links in the template.]]></tip>
+	
+	<tip label="Fixed Header" id="fixedheader"><![CDATA[<strong>The Fixed Header</strong> setting allows you to enable or disable the fixed floating header section. NOTE: Fixed header capability is not compatible with the SpliceMenu menu setting.]]></tip>
+		
+	<tip label="WebFonts" id="webfonts"><![CDATA[This setting allows you to use <strong>3rd party WebFonts</strong> from providers such as Google. You must first set WebFonts to show and then save your changes, then the available WebFonts will appear in the Font Settings dropdown from where they can be selected.]]></tip>
+	
+	<tip label="Font Settings" id="font"><![CDATA[A selection of fonts to be applied to your site's frontend is available from the <strong>Font Settings</strong> dropdown. It is also possible to set the <strong>Font Size</strong> according to your preference.]]></tip>
+	
+</gantrytips>

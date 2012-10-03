@@ -1,0 +1,64 @@
+/**
+ * @package   Tachyon Template - RocketTheme
+ * @version   1.6.8 August 14, 2012
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.rockettheme.com/legal/license.php RocketTheme Proprietary Use License
+*/
+
+/* Text Colors */
+.button3 .readon span, .button3 .readon .button, .button5 .readon span, .button5 .readon .button, .roknewspager-numbers, .title1 .module-title .title, #rt-header-surround .title1 .module-title .title, #rt-footer-surround .title1 .module-title .title, .title2 .module-title .title, #rt-header-surround .title2 .module-title .title, #rt-footer-surround .title2 .module-title .title, .box10 .title, #rt-login-button .buttontext:hover .desc, #rt-popupmodule-button .buttontext:hover .desc, #rt-accessibility:hover .rt-desc {color: #430805;text-shadow: 1px 1px 1px #E66E74;}
+.button3 .readon:hover span, .button3 .readon:hover .button, .button5 .readon:hover span, .button5 .readon:hover .button, body ul.roknewspager-numbers li.active {color: #fff;text-shadow: -1px -1px 1px #430805;}
+.timeline-dates .active, .timeline-dates .active:hover, .box10 a:hover {color: #fff;text-shadow: -1px -1px 1px #430805;}
+.box10, .box10 a {color: #430805;}
+.box10 .module-content ul.menu li > a, .box10 .module-content ul.menu li > .separator, .box10 .module-content ul.menu li > .item {color: #430805;text-shadow: 1px 1px 1px #E66E74;}
+.box10 .module-content ul.menu li a:hover, .box10 .module-content ul.menu li .separator:hover, .box10 .module-content ul.menu li .item:hover, .box10 .module-content ul.menu li.active > a, .box10 .module-content ul.menu li.active > .separator, .box10 .module-content ul.menu li.active > .item {color: #fff;text-shadow: -1px -1px 1px #444;}
+
+/* Module Variations */
+.icon11 .module-icon, .icon12 .module-icon, .icon13 .module-icon, .icon14 .module-icon {background-image: url(../images/accents/red/notice-icons2.png);}
+.title1 .module-title, .title2 .module-title {background: url(../images/accents/red/newspager-paging-r.png) 100% 0 no-repeat;}
+.title1 .module-title .title, .title2 .module-title .title {background: url(../images/accents/red/newspager-paging-l.png) 0 0 no-repeat;}
+.box10 .rt-block {background: #A81620 url(../images/accents/red/color-gradient.png) 50% 0 repeat-x;border: 1px solid #A81620;}
+.box10.title5 .module-title {background: url(../images/accents/red/accent-div.png) 50% 100% repeat-x;}
+
+/* Side Menu */
+.module-content ul.menu li > a span, .module-content ul.menu li > .separator span, .module-content ul.menu li > .item span {background-image: url(../images/accents/red/arrows.png);}
+.box10 .module-content ul.menu li {background: url(../images/accents/red/accent-div.png) 50% 100% repeat-x;}
+.box10 .module-content ul.menu li > a:hover, .box10 .module-content ul.menu li > .separator:hover, .box10 .module-content ul.menu li > .item:hover, .box10 .module-content ul.menu li.active > a, .box10 .module-content ul.menu li.active > .separator, .box10 .module-content ul.menu li.active > .item {background: #810E12;}
+
+/* Typography */
+.rokradios, .rokchecks, .rokradios-active, .rokchecks-active {background-image: url(../images/accents/red/body-rokinputs.png);}
+.headerstyle-dark .rokradios, .headerstyle-dark .rokchecks, .headerstyle-dark .rokradios-active, .headerstyle-dark .rokchecks-active, .footerstyle-dark .rokradios, .footerstyle-dark .rokchecks, .footerstyle-dark .rokradios-active, .footerstyle-dark .rokchecks-active, .box4 .rokradios, .box4 .rokchecks, .box4 .rokradios-active, .box4 .rokchecks-active {background-image: url(../images/accents/red/dark-rokinputs.png);}
+.headerstyle-light .rokradios, .headerstyle-light .rokchecks, .headerstyle-light .rokradios-active, .headerstyle-light .rokchecks-active, .footerstyle-light .rokradios, .footerstyle-light .rokchecks, .footerstyle-light .rokradios-active, .footerstyle-light .rokchecks-active {background-image: url(../images/accents/red/light-rokinputs.png);}
+#rt-login-button .buttontext:hover, #rt-popupmodule-button .buttontext:hover, #rt-accessibility:hover {background: #C3232D;}
+.button3 .readon {background-image: url(../images/accents/red/readon2-r.png);}
+.button3 .readon span, .button3 .readon .button {background-image: url(../images/accents/red/readon2-l.png);}
+.readonstyle-button .button5 .readon span, .readonstyle-button .button5 .readon button {background: #C3232D;}
+.readonstyle-button .button5 .readon:hover span, .readonstyle-button .button5 .readon:hover .button {background: #A81620;}
+#more-articles span, #form-login ul li a, .component-content .login ul li a, ul.rt-more-articles li a, .items-more ol li a, .rt-section-list ul li a, ul.mostread li a, ul.latestnews li a, .weblinks ul li a, #rt-popuplogin ul li a {background-image: url(../images/accents/red/arrows.png);}
+.controls .up, .controls .down {background-image: url(../images/accents/red/control-arrows.png);}
+
+/* RokMiniEvents */
+.rokminievents-wrapper .left-arrow, .rokminievents-wrapper .right-arrow {background-image: url(../images/accents/red/control-arrows.png);}
+.rokminievents-wrapper .timeline .progress .knob {background: url(../images/accents/red/rokminievents-knob.png);}
+.timeline-dates .active, .timeline-dates .active:hover {background: #C3232D;border-top: 1px solid #C3232D;border-left: 1px solid #C3232D;border-right: 1px solid #C3232D;border-bottom: 1px solid #C3232D;}
+
+/* RokNewsPager */
+.roknewspager-pages2 {background: url(../images/accents/red/newspager-paging-r.png) 100% 0 no-repeat;}
+.roknewspager-pages3 {background: url(../images/accents/red/newspager-paging-l.png) 0 0 no-repeat;}
+body .roknewspager-prev, body .roknewspager-prev-disabled, body .roknewspager-next, body .roknewspager-next-disabled {background-image: url(../images/accents/red/newspager-arrows.png);}
+
+/* RokTabs */
+.roktabs-wrapper .arrow-next, .roktabs-wrapper .arrow-prev {background-image: url(../images/accents/red/arrows.png);}
+
+/* RTL */
+body.rtl .button3 .readon {background-image: url(../images/accents/red/rtl/readon2-r-rtl.png);}
+body.rtl .button3 .readon span, body.rtl .button3 .readon .button {background-image: url(../images/accents/red/rtl/readon2-l-rtl.png);}
+body.rtl .roknewspager-pages2, body.rtl .title1 .module-title, body.rtl .title2 .module-title {background: url(../images/accents/red/rtl/newspager-paging-r-rtl.png) 0 0 no-repeat;}
+body.rtl .roknewspager-pages3, body.rtl .title1 .module-title .title, body.rtl .title2 .module-title .title {background: url(../images/accents/red/rtl/newspager-paging-l-rtl.png) 100% 0 no-repeat;}
+
+/* JomSocial */
+body #community-wrap .app-box-menu-icon {background-image: url(../images/accents/red/control-arrows.png);}
+body #community-wrap div.greybox a#joinButton, body #community-wrap div.greybox a#joinButton2, body #community-wrap .community-status .button, body #community-wrap .button, #community-wrap #jsMenu .jsMenuBar ul li .active, #community-wrap #jsMenu .jsMenuBar ul li:hover, #rt-main .an-se-button {background: #A81620 url(../images/accents/red/color-gradient.png) 50% 40% repeat-x !important;border: 1px solid #A81620 !important;color: #430805 !important;text-shadow: 1px 1px 1px #E66E74 !important;}
+#community-wrap #jsMenu .jsMenuBar ul li > .active, #community-wrap #jsMenu .jsMenuBar ul li:hover > a {color: #430805 !important;text-shadow: 1px 1px 1px #E66E74 !important;}
+body #community-wrap div.greybox a#joinButton:hover, body #community-wrap div.greybox a#joinButton2:hover, body #community-wrap .community-status .button:hover, body #community-wrap .button:hover {background: #A81620 !important;color: #fff !important;text-shadow: -1px -1px 1px #430805 !important;}
