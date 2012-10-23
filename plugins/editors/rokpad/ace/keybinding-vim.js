@@ -1,42 +1,36 @@
 /*
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * Copyright (c) 2010, Ajax.org B.V.
+ * All rights reserved.
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Ajax.org B.V. nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Ajax.org Code Editor (ACE).
- *
- * The Initial Developer of the Original Code is
- * Ajax.org B.V.
- * Portions created by the Initial Developer are Copyright (C) 2010
- * the Initial Developer. All Rights Reserved.
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL AJAX.ORG B.V. BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-define('ace/keyboard/vim', ['require', 'exports', 'module' , 'ace/lib/keys', 'ace/keyboard/vim/commands', 'ace/keyboard/vim/maps/util'], function(require, exports, module) {
+define('ace/keyboard/vim', ['require', 'exports', 'module' , 'ace/keyboard/vim/commands', 'ace/keyboard/vim/maps/util', 'ace/lib/useragent'], function(require, exports, module) {
 
 
-var keyUtil = require("../lib/keys");
 var cmds = require("./vim/commands");
 var coreCommands = cmds.coreCommands;
 var util = require("./vim/maps/util");
+var useragent = require("../lib/useragent");
 
 var startCommands = {
     "i": {
@@ -56,10 +50,32 @@ var startCommands = {
     },
     "ctrl-b": {
         command: "gotopageup"
-    },
+    }
 };
 
 exports.handler = {
+    // workaround for j not repeating with `defaults write -g ApplePressAndHoldEnabled -bool true`
+    handleMacRepeat: function(data, hashId, key) {
+        if (hashId == -1) {
+            // record key
+            data.inputChar = key;
+            data.lastEvent = "input";
+        } else if (data.inputChar && data.$lastHash == hashId && data.$lastKey == key) {
+            // check for repeated keypress 
+            if (data.lastEvent == "input") {
+                data.lastEvent = "input1";
+            } else if (data.lastEvent == "input1") {
+                // simulate textinput
+                return true;
+            }
+        } else {
+            // reset
+            data.$lastHash = hashId;
+            data.$lastKey = key;
+            data.lastEvent = "keypress";
+        }
+    },
+
     handleKeyboard: function(data, hashId, key, keyCode, e) {
         // ignore command keys (shift, ctrl etc.)
         if (hashId != 0 && (key == "" || key == "\x00"))
@@ -67,26 +83,31 @@ exports.handler = {
 
         if (hashId == 1)
             key = "ctrl-" + key;
-
-        if (data.state == "start") {
+        
+        if ((key == "esc" && hashId == 0) || key == "ctrl-[") {
+            return {command: coreCommands.stop};
+        } else if (data.state == "start") {
+            if (useragent.isMac && this.handleMacRepeat(data, hashId, key)) {
+                hashId = -1;
+                key = data.inputChar;
+            }
+            
             if (hashId == -1 || hashId == 1) {
                 if (cmds.inputBuffer.idle && startCommands[key])
                     return startCommands[key];
-
-                return { command: {
-                    exec: function(editor) {cmds.inputBuffer.push(editor, key);}
-                } };
-            } // wait for input
-            else if (key.length == 1 && (hashId == 0 || hashId == 4)) { //no modifier || shift
+                return {
+                    command: {
+                        exec: function(editor) {cmds.inputBuffer.push(editor, key);}
+                    }
+                };
+            } // if no modifier || shift: wait for input.
+            else if (key.length == 1 && (hashId == 0 || hashId == 4)) {
                 return {command: "null", passEvent: true};
-            } else if (key == "esc") {
+            } else if (key == "esc" && hashId == 0) {
                 return {command: coreCommands.stop};
             }
         } else {
-            if (key == "esc" || key == "ctrl-[") {
-                data.state = "start";
-                return {command: coreCommands.stop};
-            } else if (key == "ctrl-w") {
+            if (key == "ctrl-w") {
                 return {command: "removewordleft"};
             }
         }
@@ -96,6 +117,7 @@ exports.handler = {
         editor.on("click", exports.onCursorMove);
         if (util.currentMode !== "insert")
             cmds.coreCommands.stop.exec(editor);
+        editor.$vimModeHandler = this;
     },
 
     detach: function(editor) {
@@ -104,7 +126,14 @@ exports.handler = {
         util.currentMode = "normal";
     },
 
-    actions: cmds.actions
+    actions: cmds.actions,
+    getStatusText: function() {
+        if (util.currentMode == "insert")
+            return "INSERT";
+        if (util.onVisualMode)
+            return (util.onVisualLineMode ? "VISUAL LINE " : "VISUAL ") + cmds.inputBuffer.status;
+        return cmds.inputBuffer.status;
+    }
 };
 
 
@@ -383,6 +412,7 @@ var inputBuffer = exports.inputBuffer = {
     currentCmd: null,
     //currentMode: 0,
     currentCount: "",
+    status: "",
 
     // Types
     operator: null,
@@ -457,6 +487,17 @@ var inputBuffer = exports.inputBuffer = {
         else {
             this.reset();
         }
+        
+        if (this.waitingForParam || this.motion || this.operator) {
+            this.status += char;
+        } else if (this.currentCount) {
+            this.status = this.currentCount;
+        } else if (this.status) {
+            this.status = "";
+        } else {
+            return;
+        }
+        editor._emit("changeStatus");
     },
 
     waitForParam: function(cmd) {
@@ -541,6 +582,7 @@ var inputBuffer = exports.inputBuffer = {
         this.operator = null;
         this.motion = null;
         this.currentCount = "";
+        this.status = "";
         this.accepting = [NUMBER, OPERATOR, MOTION, ACTION];
         this.idle = true;
         this.waitingForParam = null;
@@ -657,7 +699,7 @@ module.exports = {
         editor.unsetStyle('insert-mode');
         editor.unsetStyle('normal-mode');
         if (editor.commands.recording)
-            editor.commands.toggleRecording();
+            editor.commands.toggleRecording(editor);
         editor.setOverwrite(false);
     },
     insertMode: function(editor) {
@@ -678,10 +720,10 @@ module.exports = {
             this.onInsertReplaySequence = null;
             this.normalMode(editor);
         } else {
-            editor._emit("vimMode", "insert");
+            editor._emit("changeStatus");
             // Record any movements, insertions in insert mode
             if(!editor.commands.recording)
-                editor.commands.toggleRecording();
+                editor.commands.toggleRecording(editor);
         }
     },
     normalMode: function(editor) {
@@ -704,10 +746,10 @@ module.exports = {
         editor.keyBinding.$data.state = "start";
         this.onVisualMode = false;
         this.onVisualLineMode = false;
-        editor._emit("changeVimMode", "normal");
+        editor._emit("changeStatus");
         // Save recorded keystrokes
         if (editor.commands.recording) {
-            editor.commands.toggleRecording();
+            editor.commands.toggleRecording(editor);
             return editor.commands.macro;
         }
         else {
@@ -726,7 +768,7 @@ module.exports = {
         editor.setStyle('insert-mode');
         editor.unsetStyle('normal-mode');
 
-        editor._emit("changeVimMode", "visual");
+        editor._emit("changeStatus");
         if (lineMode) {
             this.onVisualLineMode = true;
         } else {
@@ -780,7 +822,7 @@ module.exports = {
 };
 
 });
- 
+
 "use strict"
 
 define('ace/keyboard/vim/maps/motions', ['require', 'exports', 'module' , 'ace/keyboard/vim/maps/util', 'ace/search', 'ace/range'], function(require, exports, module) {
@@ -1015,6 +1057,40 @@ module.exports = {
                 editor.selection.selectLeft();
         }
     },
+    "H": {
+        nav: function(editor) {
+            var row = editor.renderer.getScrollTopRow();
+            editor.moveCursorTo(row);
+        },
+        sel: function(editor) {
+            var row = editor.renderer.getScrollTopRow();
+            editor.selection.selectTo(row);
+        }
+    },
+    "M": {
+        nav: function(editor) {
+            var topRow = editor.renderer.getScrollTopRow();
+            var bottomRow = editor.renderer.getScrollBottomRow();
+            var row = topRow + ((bottomRow - topRow) / 2);
+            editor.moveCursorTo(row);
+        },
+        sel: function(editor) {
+            var topRow = editor.renderer.getScrollTopRow();
+            var bottomRow = editor.renderer.getScrollBottomRow();
+            var row = topRow + ((bottomRow - topRow) / 2);
+            editor.selection.selectTo(row);
+        }
+    },
+    "L": {
+        nav: function(editor) {
+            var row = editor.renderer.getScrollBottomRow();
+            editor.moveCursorTo(row);
+        },
+        sel: function(editor) {
+            var row = editor.renderer.getScrollBottomRow();
+            editor.selection.selectTo(row);
+        }
+    },
     "k": {
         nav: function(editor) {
             editor.navigateUp();
@@ -1045,27 +1121,27 @@ module.exports = {
                 case "(":
                 case "{":
                 case "[":
-                    var cursor = editor.getCursorPosition()
-                    var end = editor.session.$findClosingBracket(param, cursor, /paren/)
+                    var cursor = editor.getCursorPosition();
+                    var end = editor.session.$findClosingBracket(param, cursor, /paren/);
                     if (!end)
                         return;
-                    var start = editor.session.$findOpeningBracket(editor.session.$brackets[param], cursor, /paren/)
+                    var start = editor.session.$findOpeningBracket(editor.session.$brackets[param], cursor, /paren/);
                     if (!start)
                         return;
                     start.column ++;
-                    editor.selection.setSelectionRange(Range.fromPoints(start, end))
-                    break
+                    editor.selection.setSelectionRange(Range.fromPoints(start, end));
+                    break;
                 case "'":
-                case "\"":
+                case '"':
                 case "/":
-                    var end = find(editor, param, 1)
+                    var end = find(editor, param, 1);
                     if (!end)
                         return;
-                    var start = find(editor, param, -1)
+                    var start = find(editor, param, -1);
                     if (!start)
                         return;
-                    editor.selection.setSelectionRange(Range.fromPoints(start.end, end.start))
-                    break
+                    editor.selection.setSelectionRange(Range.fromPoints(start.end, end.start));
+                    break;
             }
         }
     },
@@ -1135,10 +1211,9 @@ module.exports = {
         param: true,
         handlesCount: true,
         nav: function(editor, range, count, param) {
-            count = parseInt(count, 10) || 1;
             var ed = editor;
             var cursor = ed.getCursorPosition();
-            var column = util.getLeftNthChar(editor, cursor, param, count);
+            var column = util.getLeftNthChar(editor, cursor, param, count || 1);
 
             if (typeof column === "number") {
                 ed.selection.clearSelection(); // Why does it select in the first place?
@@ -1218,16 +1293,9 @@ module.exports = {
             editor.selection.selectLineEnd();
         }
     },
-    "0": {
-        nav: function(editor) {
-            var ed = editor;
-            ed.navigateTo(ed.selection.selectionLead.row, 0);
-        },
-        sel: function(editor) {
-            var ed = editor;
-            ed.selectTo(ed.selection.selectionLead.row, 0);
-        }
-    },
+    "0": new Motion(function(ed) {
+        return {row: ed.selection.lead.row, column: 0};
+    }),
     "G": {
         nav: function(editor, range, count, param) {
             if (!count && count !== 0) { // Stupid JS
@@ -1325,6 +1393,25 @@ module.exports = {
 
         return match;
     }),
+    "{": new Motion(function(ed) {
+        var session = ed.session;
+        var row = session.selection.lead.row;
+        while(row > 0 && !/\S/.test(session.getLine(row)))
+            row--;
+        while(/\S/.test(session.getLine(row)))
+            row--;
+        return {column: 0, row: row};
+    }),
+    "}": new Motion(function(ed) {
+        var session = ed.session;
+        var l = session.getLength();
+        var row = session.selection.lead.row;
+        while(row < l && !/\S/.test(session.getLine(row)))
+            row++;
+        while(/\S/.test(session.getLine(row)))
+            row++;        
+        return {column: 0, row: row};
+    }),
     "ctrl-d": {
         nav: function(editor, range, count, param) {
             editor.selection.clearSelection();
@@ -1383,6 +1470,16 @@ module.exports = {
                         editor.selection.selectLine();
                         registers._default.text += editor.getCopyText();
                         var selRange = editor.getSelectionRange();
+                        // check if end of the document was reached
+                        if (!selRange.isMultiLine()) {
+                            lastLineReached = true
+                            var row = selRange.start.row - 1;
+                            var col = editor.session.getLine(row).length
+                            selRange.setStart(row, col);
+                            editor.session.remove(selRange);
+                            editor.selection.clearSelection();
+                            break;
+                        }
                         editor.session.remove(selRange);
                         editor.selection.clearSelection();
                     }

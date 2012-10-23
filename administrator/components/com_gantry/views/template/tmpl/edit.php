@@ -1,6 +1,6 @@
 <?php
 /**
- * @version	$Id$
+ * @version	$Id: edit.php 3119 2012-09-03 18:58:03Z djamil $
  * @package Gantry
  * @copyright Copyright (C) 2009 RocketTheme. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -11,16 +11,17 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 JRequest::setVar( 'hidemainmenu', 1 );
 
-global $gantry;
+/** @var $gantry Gantry */
+		global $gantry;
 
 JHtml::_('behavior.keepalive');
 $user = JFactory::getUser();
 $canDo = $this->getActions();
+$isNew = ($this->item->id == 0);
 
 require_once(JPATH_LIBRARIES."/gantry/gantry.php");
 
 
-gantry_import('core.gantrysingleton');
 gantry_import('core.config.gantryform');
 gantry_import('core.config.gantryformnaminghelper');
 
@@ -29,45 +30,96 @@ $fieldSets = $gantryForm->getFieldsets();
 
 
 
-$gantry->addStyle($gantry->gantryUrl."/admin/widgets/gantry.css");
+//$gantry->addStyle($gantry->gantryUrl."/admin/widgets/gantry-administrator.css");
+$this->compileLess();
+define('GANTRY_CSS', 1);
+
+
+$gantry->addScript($gantry->gantryUrl."/admin/widgets/moofx.js");
+$gantry->addScript($gantry->gantryUrl."/admin/widgets/Twipsy.js");
 $gantry->addScript($gantry->gantryUrl."/admin/widgets/gantry.js");
+$gantry->addScript($gantry->gantryUrl."/admin/widgets/gantry.popupbuttons.js");
+$gantry->addScript($gantry->gantryUrl . '/admin/widgets/ajaxbutton/js/ajaxbutton.js');
+$gantry->addScript($gantry->gantryUrl."/admin/widgets/growl.js");
 if ($this->override) $gantry->addScript($gantry->gantryUrl."/admin/widgets/assignments/js/assignments.js");
 $gantry->addInlineScript("var GantryIsMaster = ".(($this->override) ? 'false' : 'true').";");
 
+function gantry_admin_render_menu($view, $item)
+{
+	$user = JFactory::getUser();
+	$canDo = $view->getActions();
+	$isNew = ($item->id == 0);
+	ob_start();
+	?>
+	<ul class="g4-actions">
+		<li class="rok-dropdown-group">
+			<div class="rok-buttons-group">
+
+				<div class="rok-button rok-button-primary" id="toolbar-apply" data-g4-toolbaraction="template.apply">Save</div
+				<div data-g4-toggle="save" class="rok-button rok-button-primary">
+					<span class="caret"></span>
+					<ul data-g4-dropdown="save" class="rok-dropdown">
+						<li><a href="#" id="toolbar-save" data-g4-toolbaraction="template.save">Save &amp; Close</a></li>
+						<?php if (!$isNew && $canDo->get('core.create')):?>
+						<li><a href="#" id="toolbar-save-copy" data-g4-toolbaraction="template.save2copy">Save as Copy</a></li>
+						<?php endif; ?>
+						<li class="divider"></li>
+						<li><a href="#" id="toolbar-save-preset">Save Preset</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li class="rok-button rok-button-secondary" id="toolbar-show-presets">Presets</li>
+		<li class="rok-button" id="toolbar-clearcache" data-ajaxbutton="{model: 'cache', action: 'clear'}">Clear Cache</li>
+		<!--<li class="rok-button" id="toolbar-purge">Reset</li>-->
+		<li class="rok-button" data-g4-toolbaraction="template.cancel">Close</li>
+	</ul>
+	<?php
+	$buffer = ob_get_clean();
+	return $buffer;
+}
+
 function gantry_admin_render_edit_item($element)
 {
-    $buffer = '';
-    $buffer .= "				<div class=\"gantry-field " . $element->type . "-field\">\n";
-    $label = '';
-    if ($element->show_label) $label = $element->getLabel() . "\n";
-    $buffer .= $label;
-    $buffer .= $element->getInput() . "\n";
-    $buffer .= "					<div class=\"clr\"></div>\n";
-    $buffer .= "				</div>\n";
-    return $buffer;
+	if ($element->type == 'tips' && (isset($element->element['tab']) && (string) $element->element['tab'] != 'overview')) return $element->getInput();
+
+	$buffer = '';
+	$buffer .= "				<div class=\"gantry-field " . $element->type . "-field g4-row\">\n";
+	$label = '';
+	if ($element->show_label) $label = $element->getLabel() . "\n";
+	$buffer .= "<div class=\"g4-cell g4-col1\">\n";
+	$buffer .= $label;
+	$buffer .= "</div>";
+	$buffer .= "<div class=\"g4-cell g4-col2\"><div class=\"g4-col2-wrap\">\n";
+	$buffer .= "<span class=\"arrow\"><span></span></span>";
+	$buffer .= $element->getInput() . "\n";
+	$buffer .= "</div></div>\n";
+	$buffer .= "</div>\n";
+	return $buffer;
 }
 
 function  gantry_admin_render_edit_override_item($element)
 {
-    $buffer = '';
-    $buffer .= "				<div class=\"gantry-field " . $element->type . "-field\">\n";
-    $label = '';
-    $checked = ($element->variance) ? ' checked="checked"' : '';
-    if ($element->show_label)
-    {
-        if (!$element->setinoverride)
-        {
-            $label = $element->getLabel() . "\n";
-        } else
-        {
-            $label = '<div class="field-label"><span class="inherit-checkbox"><input  name="overridden-' . $element->name . '" type="checkbox"' . $checked . '/></span><span class="base-label">' . $element->getLabel() . '</span></div>';
-        }
-    }
-    $buffer .= $label;
-    $buffer .= $element->getInput() . "\n";
-    $buffer .= "					<div class=\"clr\"></div>\n";
-    $buffer .= "				</div>\n";
-    return $buffer;
+	if ($element->type == 'tips' && (isset($element->element['tab']) && (string) $element->element['tab'] != 'overview')) return $element->getInput();
+
+	$buffer = "";
+	$buffer .= "				<div class=\"gantry-field " . $element->type . "-field g4-row\">\n";
+	$label = '';
+	$checked = ($element->variance) ? ' checked="checked"' : '';
+	if ($element->show_label){
+		if (!$element->setinoverride) $label = $element->getLabel() . "\n";
+		else $label = '<div class="field-label"><span class="inherit-checkbox"><input  name="overridden-' . $element->name . '" type="checkbox"' . $checked . '/></span><span class="base-label">' . $element->getLabel() . '</span></div>';
+	}
+	$buffer .= "<div class=\"g4-cell g4-col1\">\n";
+	$buffer .= $label;
+	$buffer .= "</div>";
+	$buffer .= "<div class=\"g4-cell g4-col2\"><div class=\"g4-col2-wrap\">\n";
+	$buffer .= "<span class=\"arrow\"><span></span></span>";
+	$buffer .= $element->getInput() . "\n";
+	$buffer .= "</div></div>\n";
+	$buffer .= "</div>\n";
+	return $buffer;
 }
 
 function get_badges_layout($name, $override=0, $involved=0, $assignments=0) {
@@ -88,210 +140,271 @@ function get_badges_layout($name, $override=0, $involved=0, $assignments=0) {
 
 function get_version_update_info(){
 
-    $buffer = '';
-    gantry_import('core.gantryupdates');
-    $gantry_updates = GantryUpdates::getInstance();
-    $currentVersion =  $gantry_updates->getCurrentVersion();
-    $latest_version = $gantry_updates->getLatestVersion();
+	$buffer = '';
+	gantry_import('core.gantryupdates');
+	$gantry_updates = GantryUpdates::getInstance();
+	$currentVersion =  $gantry_updates->getCurrentVersion();
+	$latest_version = $gantry_updates->getLatestVersion();
 
-    if (version_compare($latest_version,$currentVersion,'>')){
-        $klass="update";
-        $upd = JText::sprintf('COM_GANTRY_VERSION_UPDATE_OUTOFDATE',$latest_version,'index.php?option=com_installer&view=update');
-    } else {
-        $klass = "noupdate";
-        jimport('joomla.utilities.date');
-        $nextupdate = new JDate($gantry_updates->getLastUpdated()+(24*60*60));
+	if (version_compare($latest_version,$currentVersion,'>')){
+		$klass="update";
+		$upd = JText::sprintf('COM_GANTRY_VERSION_UPDATE_OUTOFDATE',$latest_version,'index.php?option=com_installer&view=update');
+	} else {
+		$klass = "noupdate";
+		jimport('joomla.utilities.date');
+		$nextupdate = new JDate($gantry_updates->getLastUpdated()+(24*60*60));
 
-        $upd = JText::sprintf('COM_GANTRY_VERSION_UPDATE_CURRENT',JHTML::_('date', $gantry_updates->getLastUpdated()+(24*60*60),JText::_('DATE_FORMAT_LC2'),true));
-    }
+		$upd = JText::sprintf('COM_GANTRY_VERSION_UPDATE_CURRENT');
+	}
 
-    $buffer .= "
-    <div id='updater' class='".$klass."'>
-        <div id='updater-bar' class='h2bar'>Gantry <span>v".$currentVersion."</span></div>
-        <div id='updater-desc'>".$upd."</div>
-    </div>";
+	$buffer .= "
+	<div class='gantry-field updater-field ".$klass."'  id='updater'>
+		<div id='updater-bar' class='h2bar'>Gantry <span>v".$currentVersion."</span></div>
+		<div id='updater-desc'>".$upd."</div>
+	</div>";
 
-    return $buffer;
+	return $buffer;
 }
 
 $this->gantryForm->initialize();
 ?>
 
-<div class="gantry-wrap <?php echo (!$this->override) ? 'defaults-wrap' : 'override-wrap'; ?>">
+<div class="g4-wrap <?php echo (!$this->override) ? 'defaults-wrap' : 'override-wrap'; ?>">
 	<?php if(!$this->override):?><div id="gantry-master"></div><?php endif;?>
+	<div id="g4-toolbar">
+		<h1>Templates Manager <small>/ Edit Style</small></h1>
+		<?php echo gantry_admin_render_menu($this, $this->item); ?>
+	</div>
 	<form action="<?php echo JRoute::_('index.php?option=com_gantry&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="template-form" class="form-validate">
-        <fieldset class="adminform gantry-details">
-			<legend><?php echo JText::_('JDETAILS');?></legend>
-			<div class="gantry-detail gantry-detail-title">
-			<?php echo $this->form->getLabel('title'); ?>
-			<?php echo $this->form->getInput('title'); ?>
-			</div>
-			<div class="gantry-detail gantry-detail-template">
-			<?php echo $this->form->getLabel('template'); ?>
-			<?php echo $this->form->getInput('template'); ?>
-			</div>
-
-			<div class="gantry-detail gantry-detail-home">
-			<?php echo $this->form->getLabel('home'); ?>
-			<?php echo $this->form->getInput('home'); ?>
-			</div>
-			<div class="gantry-detail gantry-detail-id">
-			<?php if ($this->item->id) : ?>
-				<?php echo $this->form->getLabel('id'); ?>
-                <?php echo $this->form->getInput('id'); ?>
-			<?php endif; ?>
-			</div>
-
-		</fieldset>
-
 		<?php echo $this->form->getInput('client_id'); ?>
+		<div id="g4-hidden">
+			<?php if ($this->item->id) : ?>
+				<?php echo $this->form->getInput('id'); ?>
+			<?php endif; ?>
+		</div>
 
+		<?php
+			$status = JRequest::getVar('gantry-'.$gantry->templateName.'-adminpresets', 'hide', 'COOKIE');
+			$presetsShowing = ($status == 'hide') ? "" : ' class="presets-showing"';
 
-	<!--<input type="hidden" name="id" value="<?php /*echo $gantry->templateName; */?>" />-->
-    <?php //settings_fields('theme-options-array'); ?>
-        <div class="fltrt">
-            <div class="submit-wrapper png">
+			if ($this->override) {
+				$flag = "g4-flag-override";
+				$flag_text = "Override";
+			} else {
+				$flag = "g4-flag-master";
+				$flag_text = "&#10029; Master";
+			}
+		?>
 
+		<div id="g4-details-wrapper">
+			<div id="g4-master" class="<?php echo $flag; ?> g4-size-13">
+				<div id="g4-flag">
+					<?php echo $flag_text; ?>
+					<span class="arrow"><span></span></span>
+				</div>
 			</div>
-			
+			<div id="g4-details"<?php echo $presetsShowing; ?>>
+
+
+
+				<fieldset class="adminform g4-horizontal-form">
+					<div class="g4-controlgroup g4-detail-title g4-size-30">
+						<?php echo $this->form->getLabel('title'); ?>
+						<div class="g4-controls g4-input-text">
+							<?php echo $this->form->getInput('title'); ?>
+						</div>
+					</div>
+					<div class="g4-controlgroup g4-detail-template g4-size-25">
+						<?php echo $this->form->getLabel('template'); ?>
+						<div class="g4-controls g4-input-text g4-input-readonly">
+							<?php echo $this->form->getInput('template'); ?>
+						</div>
+					</div>
+					<div class="g4-controlgroup g4-detail-home g4-size-25">
+						<?php echo $this->form->getLabel('home'); ?>
+						<div class="g4-controls g4-input-select">
+							<?php echo $this->form->getInput('home'); ?>
+						</div>
+					</div>
+
+
+				</fieldset>
+			</div>
+		</div>
+		<div id="g4-presets">
+			<div class="submit-wrapper png"></div>
 			<?php echo $this->loadTemplate('presets'); ?>
-			
-            <div class="gantry-wrapper">
-				<div id="gantry-logo">Powered by</div>
-                <ul id="gantry-tabs">
-                <?php
-					$panels = array();
-					$positions = array(
-						'hiddens' => array(),
-						'top' => array(),
-						'left' => array(),
-						'right' => array(),
-						'bottom' => array()
-					);
+		</div>
+		<div id="g4-container">
 
-                    $involvedCounts = array();
-					foreach ($fieldSets as $name => $fieldSet) {
-						if ($name == 'toolbar-panel') continue;
-						$fields = $gantryForm->getFullFieldset($name);
-                        $involved = 0;
-						array_push($panels, array("name" => $name, "height" => (isset($fieldSet->height))?$fieldSet->height:null));
-						foreach($fields as $fname => $field) {
-							$position = $field->panel_position;
-							
-                            if ($field->type != 'hidden' && $field->setinoverride && $field->variance) $involved++;
-							if ($field->type == 'hidden') $position = 'hiddens';
-							if (!isset($positions[$position][$name])) $positions[$position][$name] = array();
-							array_push(
-								$positions[$position][$name],
-                                $field
-								//array("name" => $field->name, "label" => $field->label, "input" => $field->input, "show_label" => $field->show_label, 'type' => $field->type)
-							);
+			<?php //settings_fields('theme-options-array'); ?>
+
+
+
+				<div class="g4-header">
+					<div class="g4-wrapper">
+						<div class="g4-row">
+							<div class="g4-column">
+								<div id="g4-logo"><span></span></div>
+								<ul class="g4-tabs">
+								<?php
+									$panels = array();
+									$positions = array(
+										'hiddens' => array(),
+										'top' => array(),
+										'left' => array(),
+										'right' => array(),
+										'bottom' => array()
+									);
+
+									$involvedCounts = array();
+									foreach ($fieldSets as $name => $fieldSet) {
+										if ($name == 'toolbar-panel') continue;
+										$fields = $gantryForm->getFullFieldset($name);
+										$involved = 0;
+										if ($name == 'assignment' && (!$user->authorise('core.edit', 'com_menu') || !$canDo->get('core.edit.state'))) continue;
+										array_push($panels, array("name" => $name, "height" => (isset($fieldSet->height))?$fieldSet->height:null));
+										foreach($fields as $fname => $field) {
+											$position = $field->panel_position;
+
+											if ($field->type != 'hidden' && $field->setinoverride && $field->variance) $involved++;
+											if ($field->type == 'hidden') $position = 'hiddens';
+											if (!isset($positions[$position][$name])) $positions[$position][$name] = array();
+											array_push(
+												$positions[$position][$name],
+												$field
+												//array("name" => $field->name, "label" => $field->label, "input" => $field->input, "show_label" => $field->show_label, 'type' => $field->type)
+											);
+										}
+										$involvedCounts[$name] = $involved;
+									}
+
+
+									foreach ($fieldSets as $name => $fieldSet):
+										if ($name == 'toolbar-panel') continue;
+										if ($name == 'assignment' && (!$user->authorise('core.edit', 'com_menu') || !$canDo->get('core.edit.state'))) continue;
+										?>
+										<li class="<?php echo $this->tabs[$name];?>">
+											<span class="badge"><?php echo get_badges_layout($name, $this->override, $involvedCounts[$name], $this->assignmentCount);?></span>
+											<?php echo JText::_($fieldSet->label);?>
+											<span class="arrow"><span><span></span></span></span>
+										</li>
+									<?php endforeach;?>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="g4-body">
+					<?php
+						$output = "";
+						$output .= "<div id=\"g4-panels\">\n";
+						if (count($panels) > 0)
+						{
+							for($i = 0; $i < count($panels); $i++) {
+								$panel = $panels[$i]['name'];
+								if ($panel == 'assignment' && (!$user->authorise('core.edit', 'com_menu') || !$canDo->get('core.edit.state'))) continue;
+								$width = '';
+								if ((@count($positions['left'][$panels[$i]['name']]) && !@count($positions['right'][$panels[$i]['name']])) || (!@count($positions['left'][$panels[$i]['name']]) && @count($positions['right'][$panels[$i]['name']]))) {
+									$width = 'width-auto';
+								}
+
+								$activePanel = "";
+								if ($i == $this->activeTab - 1) $activePanel = " active-panel";
+								else $activePanel = "";
+
+								$output .= "	<div class=\"g4-panel panel-".($i+1)." panel-".$panel." ".$width.$activePanel."\">\n";
+
+								$buffer = "";
+								foreach($positions as $name => $position) {
+
+									if (isset($positions[$name][$panel])) {
+										// hide right panels in Gantry4 for all but overview tab
+										if (!($name == "right" && $panel != "overview")) {
+											$buffer .= "		<div class=\"g4-panel-".$name."\">\n";
+											$panel_name = $name == 'left' ? 'panelform' : 'paneldesc';
+
+											$buffer .= "			<div class=\"".$panel_name."\">\n";
+
+											if ($panel_name == 'paneldesc' && $panel == 'overview') {
+												$buffer .= get_version_update_info();
+
+											}
+											foreach($positions[$name][$panel] as $element) {
+												if (!$this->override){
+													$buffer .= $element->render('gantry_admin_render_edit_item');
+												}
+												else{
+													$buffer .= $element->render('gantry_admin_render_edit_override_item');
+												}
+											}
+
+											$buffer .= "			</div>\n";
+											$buffer .= "		</div>\n";
+										}
+
+										if ($panel != 'overview' && $name == 'right'){
+											foreach($positions[$name][$panel] as $element) {
+												if (get_class($element) != 'GantryFormFieldTips') continue;
+
+												if (!$this->override){
+													$buffer .= $element->render('gantry_admin_render_edit_item');
+												}
+												else{
+													$buffer .= $element->render('gantry_admin_render_edit_override_item');
+												}
+											}
+										}
+									}
+								}
+								$output .= $buffer;
+
+								$output .= "	</div>";
+							}
 						}
-                        $involvedCounts[$name] = $involved;
-					}
-
-
-					foreach ($fieldSets as $name => $fieldSet):
-						if ($name == 'toolbar-panel') continue;
+						$output .= "</div>\n";
+						echo $output;
 						?>
-                        <li class="<?php echo $this->tabs[$name];?>">
-                        <span class="outer">
-                            <span class="inner"><span style="float:left;"><?php echo JText::_($fieldSet->label);?></span> <?php echo get_badges_layout($name, $this->override, $involvedCounts[$name], $this->assignmentCount);?></span>
-                        </span>
-                        </li>
+						<div class="clr"></div>
+					</div>
 
-                    <?php endforeach;?>
-                </ul>
-                <?php
-					$output = "";
-					$output .= "<div id=\"gantry-panel\">\n";
-					if (count($panels) > 0)
-                    {
-                        for($i = 0; $i < count($panels); $i++) {
-                            $panel = $panels[$i]['name'];
+				<div class="clr"></div>
+				<input type="hidden" name="task" value="" />
+				<?php echo JHtml::_('form.token'); ?>
+			</div>
 
-                            $width = '';
-                            if ((@count($positions['left'][$panels[$i]['name']]) && !@count($positions['right'][$panels[$i]['name']])) || (!@count($positions['left'][$panels[$i]['name']]) && @count($positions['right'][$panels[$i]['name']]))) {
-                                $width = 'width-auto';
-                            }
-
-                            $activePanel = "";
-                            if ($i == $this->activeTab - 1) $activePanel = " active-panel";
-                            else $activePanel = "";
-
-                            $output .= "	<div class=\"gantry-panel panel-".($i+1)." panel-".$panel." ".$width.$activePanel."\">\n";
-
-                            $buffer = "";
-                            foreach($positions as $name => $position) {
-                                if (isset($positions[$name][$panel])) {
-                                    $buffer .= "		<div class=\"gantry-panel-".$name."\">\n";
-                                    $panel_name = $name == 'left' ? 'panelform' : 'paneldesc';
-
-                                    $buffer .= "			<div class=\"".$panel_name."\">\n";
-
-                                    if ($panel_name == 'paneldesc' && $panel == 'overview') {
-                                        $buffer .= get_version_update_info();
-
-                                    }
-                                    foreach($positions[$name][$panel] as $element) {
-                                        if (!$this->override){
-                                            $buffer .= $element->render('gantry_admin_render_edit_item');
-                                        }
-                                        else{
-                                            $buffer .= $element->render('gantry_admin_render_edit_override_item');
-                                        }
-                                    }
-
-                                    $buffer .= "			</div>\n";
-                                    $buffer .= "		</div>\n";
-                                }
-                            }
-                            $output .= $buffer;
-
-                            $output .= "	</div>";
-                        }
-					}
-					$output .= "</div>\n";
-					echo $output;
-				?>
-                </div>
-                <div class="clr"></div>
-            </div>
-            <div class="clr"></div>
-            <input type="hidden" name="task" value="" />
-		    <?php echo JHtml::_('form.token'); ?>
-        </form>
-    </div>
+		</form>
+	</div>
 
 <?php
  // css overrides
-	if ($gantry->browser->name == 'ie' && file_exists($gantry->gantryPath . DS . 'admin' . DS . 'widgets' . DS . 'gantry-ie.css')) {
+	if ($gantry->browser->name == 'ie' && file_exists($gantry->gantryPath . '/' . 'admin' . '/' . 'widgets' . '/' . 'gantry-ie.css')) {
 		$gantry->addStyle($gantry->gantryUrl . '/admin/widgets/gantry-ie.css');
 	}
-	if ($gantry->browser->name == 'ie' && $gantry->browser->version == '7' && file_exists($gantry->gantryPath . DS . 'admin' . DS . 'widgets' . DS . 'gantry-ie7.css')) {
-	    $gantry->addStyle($gantry->gantryUrl . '/admin/widgets/gantry-ie7.css');
+	if ($gantry->browser->name == 'ie' && $gantry->browser->version == '7' && file_exists($gantry->gantryPath . '/' . 'admin' . '/' . 'widgets' . '/' . 'gantry-ie7.css')) {
+		$gantry->addStyle($gantry->gantryUrl . '/admin/widgets/gantry-ie7.css');
 	}
 
 	if (($gantry->browser->name == 'firefox' && $gantry->browser->version < '3.7') || ($gantry->browser->name == 'ie' && $gantry->browser->version > '6')) {
-	    $css = ".text-short, .text-medium, .text-long, .text-color {padding-top: 4px;height:19px;}";
-	    $gantry->addInlineStyle($css);
+		$css = ".text-short, .text-medium, .text-long, .text-color {padding-top: 4px;height:19px;}";
+		$gantry->addInlineStyle($css);
 	}
 
 	if ($gantry->browser->name == 'ie' && $gantry->browser->shortversion == '7') {
-	    $css = "
-	        .g-surround, .g-inner, .g-surround > div {zoom: 1;position: relative;}
-	        .text-short, .text-medium, .text-long, .text-color {border:0 !important;}
-	        .selectbox {z-index:500;position:relative;}
-	        .group-fusionmenu, .group-splitmenu {position:relative;margin-top:0 !important;zoom:1;}
-	        .scroller .inner {position:relative;}
-	        .moor-hexLabel {display:inline-block;zoom:1;float:left;}
-	        .moor-hexLabel input {float:left;}
-	    ";
-	    $gantry->addInlineStyle($css);
+		$css = "
+			.g-surround, .g-inner, .g-surround > div {zoom: 1;position: relative;}
+			.text-short, .text-medium, .text-long, .text-color {border:0 !important;}
+			.selectbox {z-index:500;position:relative;}
+			.group-fusionmenu, .group-splitmenu {position:relative;margin-top:0 !important;zoom:1;}
+			.scroller .inner {position:relative;}
+			.moor-hexLabel {display:inline-block;zoom:1;float:left;}
+			.moor-hexLabel input {float:left;}
+		";
+		$gantry->addInlineStyle($css);
 	}
-	if ($gantry->browser->name == 'opera' && file_exists($gantry->gantryPath . DS . 'admin' . DS . 'widgets' . DS . 'gantry-opera.css')) {
+	if ($gantry->browser->name == 'opera' && file_exists($gantry->gantryPath . '/' . 'admin' . '/' . 'widgets' . '/' . 'gantry-opera.css')) {
 		$gantry->addStyle($gantry->gantryUrl . '/admin/widgets/gantry-opera.css');
 	}
 
-    $this->gantryForm->finalize();
-    $gantry->finalize();
+	$this->gantryForm->finalize();
+	$gantry->finalize();

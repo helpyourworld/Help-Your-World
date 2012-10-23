@@ -137,7 +137,7 @@ function getQueryParam( $key, $default = null )
  * @author      Matt Knapp <mdknapp[at]gmail[dot]com>
  * @author      Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
  * @copyright   2005 Michal Migurski
- * @version     CVS: $Id: restore.php 52084 2012-04-02 18:08:48Z btowles $
+ * @version     CVS: $Id: restore.php 612 2011-05-19 08:26:26Z nikosdion $
  * @license     http://www.opensource.org/licenses/bsd-license.php
  * @link        http://pear.php.net/pepr/pepr-proposal-show.php?id=198
  */
@@ -5001,8 +5001,12 @@ class AKFactory {
 }
 
 /**
- * AES implementation in PHP (c) Chris Veness 2005-2011.
- * Right to use and adapt is granted for under a simple creative commons attribution
+ * AES implementation in PHP (c) Chris Veness 2005-2011
+ * (http://www.movable-type.co.uk/scripts/aes-php.html)
+ * I offer these formulæ & scripts for free use and adaptation as my contribution to the 
+ * open-source info-sphere from which I have received so much. You are welcome to re-use these 
+ * scripts [under a simple attribution license or a GPL licence, without any warranty express or implied] 
+ * provided solely that you retain my copyright notice and a link to this page.
  * licence. No warranty of any form is offered.
  *
  * Modified for Akeeba Backup by Nicholas K. Dionysopoulos

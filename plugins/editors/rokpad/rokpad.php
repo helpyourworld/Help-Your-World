@@ -20,7 +20,7 @@ class plgEditorRokPad extends JPlugin
 	/**
 	 * @var string
 	 */
-	protected $_version = '2.0.0';
+	protected $_version = '2.0.4';
 	/**
 	 * @var string
 	 */

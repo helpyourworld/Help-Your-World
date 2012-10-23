@@ -1,8 +1,6 @@
 <?php
 /**
- * @package   gantry
- * @subpackage core
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: gantryplatform.class.php 3003 2012-09-01 17:12:52Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -10,116 +8,220 @@
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
  *
  */
+defined('GANTRY_VERSION') or die();
 
 /**
- * @package   gantry
+ * @package    gantry
  * @subpackage core
  */
-class GantryPlatform {
+class GantryPlatform
+{
 
-    var $php_version;
-    var $platform;
-    var $platform_version;
-    var $jslib;
-    var $jslib_version;
-    var $jslib_shortname;
-    var $_js_file_checks = array();
+	/**
+	 * @var string
+	 */
+	public $php_version;
 
-    function GantryPlatform(){
-        $this->php_version = phpversion();
-        $this->_getPlatformInfo();
-    }
+	/**
+	 * @var string
+	 */
+	public $platform;
 
-    function _getPlatformInfo(){
-        // See if its joomla
-        if (defined('_JEXEC') && defined('JVERSION')){
-            $this->platform='joomla';
-            if (version_compare(JVERSION, '1.5', '>=') && version_compare(JVERSION, '1.6', '<')){
-                $this->platform_version = JVERSION;
-                $this->_getJoomla15Info();
-            }
-            else if (version_compare(JVERSION, '1.6', '>=')){
-                $this->platform_version = JVERSION;
-                $this->_getJoomla16Info();
-            }
-            else {
-                $this->_unsuportedInfo();
-            }
-        }
-        else {
-            $this->_unsuportedInfo();
-        }
-    }
+	/**
+	 * @var string
+	 */
+	public $platform_version;
 
-    function _unsuportedInfo(){
-        foreach (get_object_vars($this) as $var_name => $var_value){
-            if (null == $var_value) $this->$var_name = "unsupported";
-        }
-    }
+	/**
+	 * @var string
+	 */
+	public $jslib;
 
-    // Get info for Joomla 1.5 versions
-    function _getJoomla15Info(){
-        $mainframe =& JFactory::getApplication();
+	/**
+	 * @var string
+	 */
+	public $jslib_version;
 
-        $this->jslib = 'mootools';
+	/**
+	 * @var string
+	 */
+	public $jslib_shortname;
 
-        $this->jslib_shortname= 'mt';
+	/**
+	 * @var array
+	 */
+	public $_js_file_checks = array();
 
-        $mootools_version = JFactory::getApplication()->get('MooToolsVersion', '1.11');
-        if ($mootools_version != "1.11" || $mainframe->isAdmin()){
-            $this->jslib_version = '1.2';
-        }
-        else {
-            $this->jslib_version = '1.1';
-        }
+	/**
+	 *
+	 */
+	public function __construct()
+	{
+		$this->php_version = phpversion();
+		$this->getPlatformInfo();
+	}
 
-        // Create the JS checks for Joomla 1.5
-        $this->_js_file_checks = array(
-            '-'.$this->jslib.$this->jslib_version,
-            '-'.$this->jslib_shortname.$this->jslib_version
-        );
-        if (JPluginHelper::isEnabled('system', 'mtupgrade')){
-            $this->_js_file_checks[] = '-upgrade';
-        }
-        $this->_js_file_checks[] = '';
-    }
+	/**
+	 *
+	 */
+	protected function getPlatformInfo()
+	{
+		// See if its joomla
+		if (defined('_JEXEC') && defined('JVERSION')) {
+			$this->platform = 'joomla';
+			if (version_compare(JVERSION, '1.5', '>=') && version_compare(JVERSION, '1.6', '<')) {
+				$this->platform_version = JVERSION;
+				$this->getJoomla15Info();
+			} else if (version_compare(JVERSION, '1.6', '>=')) {
+				$this->platform_version = JVERSION;
+				$this->getJoomla16Info();
+			} else {
+				$this->unsuportedInfo();
+			}
+		} else {
+			$this->unsuportedInfo();
+		}
+	}
 
-    // Get info for Joomla 1.6 versions
-    function _getJoomla16Info(){
-        $this->jslib = 'mootools';
-        $this->jslib_shortname = 'mt';
-        $this->jslib_version = '1.2';
-        $this->_js_file_checks = array(
-            '-'.$this->jslib.$this->jslib_version,
-            '-'.$this->jslib_shortname.$this->jslib_version,
-            ''
-        );
-    }
+	/**
+	 *
+	 */
+	protected function unsuportedInfo()
+	{
+		foreach (get_object_vars($this) as $var_name => $var_value) {
+			if (null == $var_value) $this->$var_name = "unsupported";
+		}
+	}
 
-        // Get info for Joomla 1.7 versions
-    function _getJoomla17Info(){
-        $this->jslib = 'mootools';
-        $this->jslib_shortname = 'mt';
-        $this->jslib_version = '1.2';
-        $this->_js_file_checks = array(
-            '-'.$this->jslib.$this->jslib_version,
-            '-'.$this->jslib_shortname.$this->jslib_version,
-            ''
-        );
-    }
+	// Get info for Joomla 1.5 versions
+	/**
+	 *
+	 */
+	protected function getJoomla15Info()
+	{
+		$mainframe = JFactory::getApplication();
 
-    function getJSChecks($file, $keep_path = false){
-        $checkfiles = array();
-        $ext = substr($file, strrpos($file, '.'));
-        $path = ($keep_path)?dirname($file).DS:'';
-        $filename = basename($file, $ext);
-        foreach($this->_js_file_checks as $suffix){
-            $checkfiles[] = $path.$filename.$suffix.$ext;
-        }
-        return $checkfiles;
-    }
+		$this->jslib = 'mootools';
 
-    function getJSInit(){
-        return $this->jslib_shortname . '_'. str_replace('.','_',$this->jslib_version);
-    }
+		$this->jslib_shortname = 'mt';
+
+		$mootools_version = JFactory::getApplication()->get('MooToolsVersion', '1.11');
+		if ($mootools_version != "1.11" || $mainframe->isAdmin()) {
+			$this->jslib_version = '1.2';
+		} else {
+			$this->jslib_version = '1.1';
+		}
+
+		// Create the JS checks for Joomla 1.5
+		$this->_js_file_checks = array(
+			'-' . $this->jslib . $this->jslib_version, '-' . $this->jslib_shortname . $this->jslib_version
+		);
+		if (JPluginHelper::isEnabled('system', 'mtupgrade')) {
+			$this->_js_file_checks[] = '-upgrade';
+		}
+		$this->_js_file_checks[] = '';
+	}
+
+	// Get info for Joomla 1.6 versions
+	/**
+	 *
+	 */
+	protected function getJoomla16Info()
+	{
+		$this->jslib           = 'mootools';
+		$this->jslib_shortname = 'mt';
+		$this->jslib_version   = '1.2';
+		$this->_js_file_checks = array(
+			'-' . $this->jslib . $this->jslib_version, '-' . $this->jslib_shortname . $this->jslib_version, ''
+		);
+	}
+
+	// Get info for Joomla 1.7 versions
+	/**
+	 *
+	 */
+	protected function getJoomla17Info()
+	{
+		$this->jslib           = 'mootools';
+		$this->jslib_shortname = 'mt';
+		$this->jslib_version   = '1.2';
+		$this->_js_file_checks = array(
+			'-' . $this->jslib . $this->jslib_version, '-' . $this->jslib_shortname . $this->jslib_version, ''
+		);
+	}
+
+	/**
+	 * @param      $file
+	 * @param bool $keep_path
+	 *
+	 * @return array
+	 */
+	public function getJSChecks($file, $keep_path = false)
+	{
+		$checkfiles = array();
+		$ext        = substr($file, strrpos($file, '.'));
+		$path       = ($keep_path) ? dirname($file) . '/' : '';
+		$filename   = basename($file, $ext);
+		foreach ($this->_js_file_checks as $suffix) {
+			$checkfiles[] = $path . $filename . $suffix . $ext;
+		}
+		return $checkfiles;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getJSInit()
+	{
+		return $this->jslib_shortname . '_' . str_replace('.', '_', $this->jslib_version);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJslib()
+	{
+		return $this->jslib;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJslibShortname()
+	{
+		return $this->jslib_shortname;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJslibVersion()
+	{
+		return $this->jslib_version;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPhpVersion()
+	{
+		return $this->php_version;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPlatform()
+	{
+		return $this->platform;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPlatformVersion()
+	{
+		return $this->platform_version;
+	}
+
 }

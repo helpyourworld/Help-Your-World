@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: columns.php 2325 2012-08-13 17:46:48Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only

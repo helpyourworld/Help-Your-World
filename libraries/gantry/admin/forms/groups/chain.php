@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: chain.php 2381 2012-08-15 04:14:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -29,6 +29,7 @@ class GantryFormGroupChain extends GantryFormGroup
     protected $enabler;
 
     public function getInput(){
+		/** @var $gantry Gantry */
 		global $gantry;
         $buffer = '';
 

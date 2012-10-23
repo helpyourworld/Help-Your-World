@@ -1,7 +1,6 @@
 <?php
 /**
- * @package   Gantry Template Framework - RocketTheme
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: gantrypositions.class.php 2468 2012-08-17 06:16:57Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -13,80 +12,126 @@ defined('GANTRY_VERSION') or die();
 
 gantry_import('core.gantryflatfile');
 
-if (!defined('POSITIONS_MD5'))
-{
-    define('POSITIONS_MD5', 0);
-    define('POSITIONS_LAYPUT', 1);
+if (!defined('POSITIONS_MD5')) {
+	/**
+	 *
+	 */
+	define('POSITIONS_MD5', 0);
+	/**
+	 *
+	 */
+	define('POSITIONS_LAYPUT', 1);
 }
 
+/**
+ *
+ */
 class GantryPositions
 {
 
-    private static $instances = array();
+	/**
+	 * @var array
+	 */
+	private static $instances = array();
 
-    public static function getInstance($grid)
-    {
-        if (!array_key_exists($grid, self::$instances))
-        {
-            $instances[$grid] = new GantryPositions($grid);
-        }
-        return $instances[$grid];
-    }
+	/**
+	 * @static
+	 *
+	 * @param $grid
+	 *
+	 * @return mixed
+	 */
+	public static function getInstance($grid)
+	{
+		if (!array_key_exists($grid, self::$instances)) {
+			$instances[$grid] = new GantryPositions($grid);
+		}
+		return $instances[$grid];
+	}
 
 
-    private $_db = null;
-    private $_db_file = null;
-    private $_cache = array();
+	/**
+	 * @var null
+	 */
+	private $_db = null;
 
-    private $_gridSystem;
+	/**
+	 * @var null
+	 */
+	private $_db_file = null;
 
-    protected function __construct($grid)
-    {
-        $this->_gridSystem = $grid;
-    }
+	/**
+	 * @var array
+	 */
+	private $_cache = array();
 
-    public function __sleep()
-    {
-        return array(
-            '_cache',
-            '_gridSystem'
-        );
-    }
+	/**
+	 * @var
+	 */
+	private $_gridSystem;
 
-    private function _init()
-    {
-        global $gantry;
+	/**
+	 * @param $grid
+	 */
+	protected function __construct($grid)
+	{
+		$this->_gridSystem = $grid;
+	}
 
-        if (null == $this->_db)
-        {
-            $this->_db = new Flatfile();
-            $this->_db->datadir = $gantry->gantryPath . DS . 'admin' . DS . 'cache' . DS;
-        }
+	/**
+	 * @return array
+	 */
+	public function __sleep()
+	{
+		return array(
+			'_cache', '_gridSystem'
+		);
+	}
 
-        $this->_db_file = $this->_gridSystem . '.cache.txt';
-    }
+	/**
+	 *
+	 */
+	private function _init()
+	{
+		/** @var $gantry Gantry */
+		global $gantry;
 
-    public function get($md5)
-    {
-        $this->_init();
-        $ret = null;
+		if (null == $this->_db) {
+			$this->_db          = new Flatfile();
+			$this->_db->datadir = $gantry->gantryPath . '/' . 'admin' . '/' . 'cache' . '/';
+		}
 
-        if (array_key_exists($md5, $this->_cache))
-        {
-            return $this->_cache[$md5];
-        }
-        $retarray = $this->_db->selectUnique($this->_db_file, POSITIONS_MD5, $md5);
-        if (null != $retarray && is_array($retarray) && count($retarray) > 0)
-        {
-            $ret = $retarray[POSITIONS_LAYPUT];
-        }
-        $this->_cache[$md5] = $ret;
-        return $ret;
-    }
+		$this->_db_file = $this->_gridSystem . '.cache.txt';
+	}
 
-    public function set($md5, $permutation)
-    {
-        $this->_init();
-        $this->_db->insert($this->_db_file, array($md5, $permutation));
-    }
+	/**
+	 * @param $md5
+	 *
+	 * @return null
+	 */
+	public function get($md5)
+	{
+		$this->_init();
+		$ret = null;
+
+		if (array_key_exists($md5, $this->_cache)) {
+			return $this->_cache[$md5];
+		}
+		$retarray = $this->_db->selectUnique($this->_db_file, POSITIONS_MD5, $md5);
+		if (null != $retarray && is_array($retarray) && count($retarray) > 0) {
+			$ret = $retarray[POSITIONS_LAYPUT];
+		}
+		$this->_cache[$md5] = $ret;
+		return $ret;
+	}
+
+	/**
+	 * @param $md5
+	 * @param $permutation
+	 */
+	public function set($md5, $permutation)
+	{
+		$this->_init();
+		$this->_db->insert($this->_db_file, array($md5, $permutation));
+	}
 }

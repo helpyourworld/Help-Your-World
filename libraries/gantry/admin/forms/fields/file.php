@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: file.php 2381 2012-08-15 04:14:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -12,27 +12,31 @@ defined('GANTRY_VERSION') or die();
  */
 gantry_import('core.config.gantryformfield');
 
-class GantryFormFieldFile extends GantryFormField {
+class GantryFormFieldFile extends GantryFormField
+{
 
 
-    protected $type = 'html';
-    protected $basetype = 'none';
+	protected $type = 'html';
+	protected $basetype = 'none';
 
-	public function getInput(){
+	public function getInput()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
-        $html = '';
+		$html = '';
 
-        $filepath = $this->element['path'];
-        $filepath = realpath($gantry->templatePath.$filepath);
-        if ($filepath != false){
-            ob_start();
-            include($filepath);
-            $html = ob_get_clean();
-        }
-		return "<div class='html'>".$html."</div>";
+		$filepath = $this->element['path'];
+		$filepath = realpath($gantry->templatePath . $filepath);
+		if ($filepath != false) {
+			ob_start();
+			include($filepath);
+			$html = ob_get_clean();
+		}
+		return "<div class='html'>" . $html . "</div>";
 	}
 
-	public function getLabel(){
-        return "";
-    }
+	public function getLabel()
+	{
+		return "";
+	}
 }

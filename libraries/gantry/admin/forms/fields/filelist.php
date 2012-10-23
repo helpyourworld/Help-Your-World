@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: filelist.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla.Framework
- * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @version        $Id: filelist.php 2325 2012-08-13 17:46:48Z btowles $
+ * @package        Joomla.Framework
+ * @subpackage     Form
+ * @copyright      Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @license        GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
@@ -19,26 +19,26 @@ GantryFormHelper::loadFieldType('list');
 /**
  * Supports an HTML select list of file
  *
- * @package		Joomla.Framework
- * @subpackage	Form
- * @since		1.6
+ * @package        Joomla.Framework
+ * @subpackage     Form
+ * @since          1.6
  */
 class GantryFormFieldFileList extends GantryFormFieldSelectBox
 {
 	/**
 	 * The form field type.
 	 *
-	 * @var		string
-	 * @since	1.6
+	 * @var        string
+	 * @since    1.6
 	 */
 	public $type = 'FileList';
-    protected $basetype = 'select';
+	protected $basetype = 'select';
 
 	/**
 	 * Method to get the field options.
 	 *
-	 * @return	array	The field option objects.
-	 * @since	1.6
+	 * @return    array    The field option objects.
+	 * @since    1.6
 	 */
 	public function getOptions()
 	{
@@ -46,16 +46,16 @@ class GantryFormFieldFileList extends GantryFormFieldSelectBox
 		$options = array();
 
 		// Initialize some field attributes.
-		$filter			= (string) $this->element['filter'];
-		$exclude		= (string) $this->element['exclude'];
-		$stripExt		= (string) $this->element['stripext'];
-		$hideNone		= (string) $this->element['hide_none'];
-		$hideDefault	= (string) $this->element['hide_default'];
+		$filter      = (string)$this->element['filter'];
+		$exclude     = (string)$this->element['exclude'];
+		$stripExt    = (string)$this->element['stripext'];
+		$hideNone    = (string)$this->element['hide_none'];
+		$hideDefault = (string)$this->element['hide_default'];
 
 		// Get the path in which to search for file options.
-		$path = (string) $this->element['directory'];
+		$path = (string)$this->element['directory'];
 		if (!is_dir($path)) {
-			$path = JPATH_ROOT.'/'.$path;
+			$path = JPATH_ROOT . '/' . $path;
 		}
 
 		// Prepend some default options based on field attributes.
@@ -71,11 +71,11 @@ class GantryFormFieldFileList extends GantryFormFieldSelectBox
 
 		// Build the options list from the list of files.
 		if (is_array($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 
 				// Check to see if the file is in the exclude mask.
 				if ($exclude) {
-					if (preg_match(chr(1).$exclude.chr(1), $file)) {
+					if (preg_match(chr(1) . $exclude . chr(1), $file)) {
 						continue;
 					}
 				}
@@ -91,7 +91,7 @@ class GantryFormFieldFileList extends GantryFormFieldSelectBox
 
 		// Merge any additional options in the XML definition.
 		$options = array_merge(parent::getOptions(), $options);
-		
+
 		return $options;
 	}
 }

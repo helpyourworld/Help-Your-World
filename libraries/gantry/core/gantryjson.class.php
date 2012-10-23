@@ -1,13 +1,12 @@
 <?php
 /**
- * @package   gantry
- * @subpackage core
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: gantryjson.class.php 3757 2012-09-18 20:01:40Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  *
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
+ *
  *
  * This is based on JXtendeds JXJSON GNU/GPL Copyright (C) 2007 Louis Landry. All rights reserved.
  * Only the names were changed to protect the innocent.
@@ -24,50 +23,54 @@ if (!extension_loaded('json')) {
 	}
 }
 if (!defined('GANTRYJSON_NATIVE')) {
-	define('GANTRYJSON_NATIVE', (function_exists('json_encode'))? 0 : 0);
+	define('GANTRYJSON_NATIVE', (function_exists('json_encode')) ? 0 : 0);
 }
 
 /**
  * JSON encoding/decoding class
  *
- * @contributor	Andrea Giammarchi <http://www.devpro.it>
+ * @contributor    Andrea Giammarchi <http://www.devpro.it>
  *
- * @author		Louis Landry <louis.landry@webimagery.net>
- * @package   gantry
- * @subpackage core
- * @version		1.0
+ * @author         Louis Landry <louis.landry@webimagery.net>
+ * @package        gantry
+ * @subpackage     core
+ * @version        1.0
  */
 class GantryJSON
 {
 	/**
 	 * Method to decode a JSON string into either an array or object of a given type
 	 *
-	 * @note	This method works in an optimist way. If JSON string is not valid
-	 * 		the code execution will die using exit.
-	 *		This is probably not so good but JSON is often used combined with
-	 *		XMLHttpRequest then I suppose that's better more protection than
-	 *		just some WARNING.
-	 *		With every kind of valid JSON string the old error_reporting level
-	 *		and the old error_handler will be restored.
+	 * @note      This method works in an optimist way. If JSON string is not valid
+	 *            the code execution will die using exit.
+	 *            This is probably not so good but JSON is often used combined with
+	 *            XMLHttpRequest then I suppose that's better more protection than
+	 *            just some WARNING.
+	 *            With every kind of valid JSON string the old error_reporting level
+	 *            and the old error_handler will be restored.
 	 *
 	 * <code>
 	 * <?php
-	 *	GantryJSON::decode('["one",two,true,false,null,{},[1,2]]'); // array
+	 *    GantryJSON::decode('["one",two,true,false,null,{},[1,2]]'); // array
 	 * ?>
 	 * </code>
 	 *
-	 * @access	public
-	 * @param	string	$src	The JSON source string to decode
-	 * @param`	mixed	$class	Either false to return an array or the name of a class to return an instance of
-	 * @return	mixed	Either an object, array, or null representation of the JSON string
-	 * @since	1.0
+	 * @access    public
+	 *
+	 * @param    string    $src    The JSON source string to decode
+	 * @param string       $stdClass
+	 *
+	 * @internal  param $ `    mixed    $class    Either false to return an array or the name of a class to return an instance of
+	 *
+	 * @return    mixed    Either an object, array, or null representation of the JSON string
+	 * @since     1.0
 	 */
-	function decode($src, $stdClass = 'stdClass')
+	public static function decode($src, $stdClass = 'stdClass')
 	{
 		if (GANTRYJSON_NATIVE) {
 			return json_decode($src);
 		}
-		$pos = 0;
+		$pos    = 0;
 		$length = is_string($src) ? strlen($src) : null;
 		if ($length !== null) {
 			$result = GantryJSON::_decode($src, $pos, $length, $stdClass);
@@ -82,43 +85,43 @@ class GantryJSON
 	 *
 	 * <code>
 	 * <?php
-	 *	$obj = new MyClass();
-	 *	obj->param = "value";
-	 *	obj->param2 = "value2";
-	 *	GantryJSON::encode(obj); // '{"param":"value","param2":"value2"}'
+	 *    $obj = new MyClass();
+	 *    obj->param = "value";
+	 *    obj->param2 = "value2";
+	 *    GantryJSON::encode(obj); // '{"param":"value","param2":"value2"}'
 	 * ?>
 	 * </code>
 	 *
-	 * @access	public
-	 * @param	mixed	$decode	The PHP native object or array to encode into JSON
-	 * @return	string	The JSON representation of the PHP native object or array
-	 * @since	1.0
+	 * @access    public
+	 *
+	 * @param    mixed    $decode    The PHP native object or array to encode into JSON
+	 *
+	 * @return    string    The JSON representation of the PHP native object or array
+	 * @since     1.0
 	 */
-	function encode($decode)
+	public static function encode($decode)
 	{
 		if (GANTRYJSON_NATIVE) {
 			return json_encode($decode);
 		}
 		$result = '';
-		switch (gettype($decode))
-		{
+		switch (gettype($decode)) {
 			case 'array' :
 				if (!count($decode) || array_keys($decode) === range(0, count($decode) - 1)) {
-					$keys = array ();
-					foreach ($decode as $value)
-					{
+					$keys = array();
+					foreach ($decode as $value) {
 						if (($value = GantryJSON::encode($value)) !== '') {
 							array_push($keys, $value);
 						}
 					}
-					$result = '['.implode(',', $keys).']';
+					$result = '[' . implode(',', $keys) . ']';
 				} else {
 					$result = GantryJSON::convert($decode);
 				}
 				break;
 			case 'string' :
 				$replacement = GantryJSON::_getStaticReplacement();
-				$result = '"'. addslashes(str_replace($replacement['find'], $replacement['replace'], $decode)).'"';
+				$result      = '"' . addslashes(str_replace($replacement['find'], $replacement['replace'], $decode)) . '"';
 				break;
 			default :
 				if (!is_callable($decode)) {
@@ -137,77 +140,78 @@ class GantryJSON
 	 *
 	 * - JSON string to time() integer:
 	 *
-	 *		GantryJSON::convert(decodedDate:String):time()
+	 *        GantryJSON::convert(decodedDate:String):time()
 	 *
-	 *	If You recieve a date string rappresentation You
-	 *	could convert into respective time() integer.
-	 *	Example:
-	 *		GantryJSON::convert(GantryJSON::decode($clienttime));
-	 *		// i.e. $clienttime = 2006-11-09T14:42:30
-	 *		// returned time will be an integer useful with gmdate or date
-	 *		// to create, for example, this string
+	 *    If You recieve a date string rappresentation You
+	 *    could convert into respective time() integer.
+	 *    Example:
+	 *        GantryJSON::convert(GantryJSON::decode($clienttime));
+	 *        // i.e. $clienttime = 2006-11-09T14:42:30
+	 *        // returned time will be an integer useful with gmdate or date
+	 *        // to create, for example, this string
 	 *              // Thu Nov 09 2006 14:42:30 GMT+0100 (Rome, Europe)
 	 *
 	 * - time() to JSON string:
 	 *
-	 *		GantryJSON::convert(time():Int32, true:Boolean):JSON Date String format
+	 *        GantryJSON::convert(time():Int32, true:Boolean):JSON Date String format
 	 *
-	 *	You could send server time() informations and send them to clients.
-	 *	Example:
-	 *		GantryJSON::convert(time(), true);
-	 *		// i.e. 2006-11-09T14:42:30
+	 *    You could send server time() informations and send them to clients.
+	 *    Example:
+	 *        GantryJSON::convert(time(), true);
+	 *        // i.e. 2006-11-09T14:42:30
 	 *
 	 * - associative array to generic class:
 	 *
-	 *		GantryJSON::convert(array(params=>values), new GenericClass):new Instance of GenericClass
+	 *        GantryJSON::convert(array(params=>values), new GenericClass):new Instance of GenericClass
 	 * This method is used by GantryJSON::encode method but should be used
 	 * to do these convertions too:
 	 *
 	 * - JSON string to time() integer:
 	 *
-	 *		GantryJSON::convert(decodedDate:String):time()
+	 *        GantryJSON::convert(decodedDate:String):time()
 	 *
-	 *	If You recieve a date string rappresentation You
-	 *	could convert into respective time() integer.
-	 *	Example:
-	 *		GantryJSON::convert(GantryJSON::decode($clienttime));
-	 *		// i.e. $clienttime = 2006-11-09T14:42:30
-	 *		// returned time will be an integer useful with gmdate or date
-	 *		// to create, for example, this string
+	 *    If You recieve a date string rappresentation You
+	 *    could convert into respective time() integer.
+	 *    Example:
+	 *        GantryJSON::convert(GantryJSON::decode($clienttime));
+	 *        // i.e. $clienttime = 2006-11-09T14:42:30
+	 *        // returned time will be an integer useful with gmdate or date
+	 *        // to create, for example, this string
 	 *              // Thu Nov 09 2006 14:42:30 GMT+0100 (Rome, Europe)
 	 *
 	 * - time() to JSON string:
 	 *
-	 *		GantryJSON::convert(time():Int32, true:Boolean):JSON Date String format
+	 *        GantryJSON::convert(time():Int32, true:Boolean):JSON Date String format
 	 *
-	 *	You could send server time() informations and send them to clients.
-	 *	Example:
-	 *		GantryJSON::convert(time(), true);
-	 *		// i.e. 2006-11-09T14:42:30
+	 *    You could send server time() informations and send them to clients.
+	 *    Example:
+	 *        GantryJSON::convert(time(), true);
+	 *        // i.e. 2006-11-09T14:42:30
 	 *
 	 * - associative array to generic class:
 	 *
-	 *		GantryJSON::convert(array(params=>values), new GenericClass):new Instance of GenericClass
+	 *        GantryJSON::convert(array(params=>values), new GenericClass):new Instance of GenericClass
 	 *
-	 * @access	public
-	 * @param	mixed	$param	The variable to convert into JSON
-	 * @param	object	$result	Optional object if first parameter is an object
-	 * @return	string	time() value or new object with parameters
-	 * @since	1.0
+	 * @access    public
+	 *
+	 * @param              $params
+	 * @param    object    $result    Optional object if first parameter is an object
+	 *
+	 * @internal  param mixed $param The variable to convert into JSON
+	 * @return    string    time() value or new object with parameters
+	 * @since     1.0
 	 */
-	function convert($params, $result = null)
+	public static function convert($params, $result = null)
 	{
-		switch (gettype($params))
-		{
+		switch (gettype($params)) {
 			case 'array' :
-				$tmp = array ();
-				foreach ($params as $key => $value)
-				{
+				$tmp = array();
+				foreach ($params as $key => $value) {
 					if (($value = GantryJSON::encode($value)) !== '') {
-						array_push($tmp, GantryJSON::encode(strval($key)).':'.$value);
+						array_push($tmp, GantryJSON::encode(strval($key)) . ':' . $value);
 					}
 				}
-				$result = '{'.implode(',', $tmp).'}';
+				$result = '{' . implode(',', $tmp) . '}';
 				break;
 			case 'boolean' :
 				$result = $params ? 'true' : 'false';
@@ -227,21 +231,20 @@ class GantryJSON
 				}
 				break;
 			case 'object' :
-				$tmp = array ();
+				$tmp = array();
 				if (is_object($result)) {
-					foreach ($params as $key => $value)
-					{
+					foreach ($params as $key => $value) {
 						$result->$key = $value;
 					}
 				} else {
 					$result = get_object_vars($params);
-					foreach ($result as $key => $value)
-					{
+					foreach ($result as $key => $value) {
 						if (($value = GantryJSON::encode($value)) !== '') {
-							array_push($tmp, GantryJSON::encode($key).':'.$value);
+							array_push($tmp, GantryJSON::encode($key) . ':' . $value);
 						}
-					};
-					$result = '{'.implode(',', $tmp).'}';
+					}
+					;
+					$result = '{' . implode(',', $tmp) . '}';
 				}
 				break;
 		}
@@ -249,27 +252,36 @@ class GantryJSON
 	}
 
 	// private methods, uncommented, sorry
-	function _getStaticReplacement()
+	protected static function _getStaticReplacement()
 	{
-		static $replacement = array ('find' => array (), 'replace' => array () );
+		static $replacement = array('find' => array(), 'replace' => array());
 
-		if ($replacement['find'] == array ()) {
-			foreach (array_merge(range(0, 7), array (11), range(14, 31)) as $v)
-			{
-				$replacement['find'][] = chr($v);
-				$replacement['replace'][] = "\\u00".sprintf("%02x", $v);
+		if ($replacement['find'] == array()) {
+			foreach (array_merge(range(0, 7), array(11), range(14, 31)) as $v) {
+				$replacement['find'][]    = chr($v);
+				$replacement['replace'][] = "\\u00" . sprintf("%02x", $v);
 			}
 
-			$replacement['find'] = array_merge(array (chr(0x5c), chr(0x2F), chr(0x22), chr(0x0d), chr(0x0c), chr(0x0a), chr(0x09), chr(0x08)), $replacement['find']);
-			$replacement['replace'] = array_merge(array ('\\\\', '\\/', '\\"', '\r', '\f', '\n', '\t', '\b' ), $replacement['replace']);
+			$replacement['find']    = array_merge(array(
+			                                           chr(0x5c),
+			                                           chr(0x2F),
+			                                           chr(0x22),
+			                                           chr(0x0d),
+			                                           chr(0x0c),
+			                                           chr(0x0a),
+			                                           chr(0x09),
+			                                           chr(0x08)
+			                                      ), $replacement['find']);
+			$replacement['replace'] = array_merge(array(
+			                                           '\\\\', '\\/', '\\"', '\r', '\f', '\n', '\t', '\b'
+			                                      ), $replacement['replace']);
 		}
 		return $replacement;
 	}
 
-	function _decode(& $encode, & $pos, & $slen, & $class)
+	protected static function _decode(& $encode, & $pos, & $slen, & $class)
 	{
-		switch ($encode { $pos })
-		{
+		switch ($encode{$pos}) {
 			case 't' :
 				$result = true;
 				$pos += 4;
@@ -283,38 +295,35 @@ class GantryJSON
 				$pos += 4;
 				break;
 			case '[' :
-				$result = array ();
-				++ $pos;
-				while ($encode { $pos } !== ']')
-				{
+				$result = array();
+				++$pos;
+				while ($encode{$pos} !== ']') {
 					array_push($result, GantryJSON::_decode($encode, $pos, $slen, $class));
-					if ($encode { $pos } === ',') {
-						++ $pos;
+					if ($encode{$pos} === ',') {
+						++$pos;
 					}
 				}
-				++ $pos;
+				++$pos;
 				break;
 			case '{' :
-				$result = $class ? new $class : array ();
-				++ $pos;
-				while ($encode { $pos } !== '}')
-				{
+				$result = $class ? new $class : array();
+				++$pos;
+				while ($encode{$pos} !== '}') {
 					$tmp = GantryJSON::_decodeString($encode, ++$pos);
-					++ $pos;
+					++$pos;
 					if ($class) {
-						$result-> $tmp = GantryJSON::_decode($encode, ++$pos, $slen, $class);
+						$result->$tmp = GantryJSON::_decode($encode, ++$pos, $slen, $class);
 					} else {
 						$result[$tmp] = GantryJSON::_decode($encode, ++$pos, $slen, $class);
 					}
-					if ($encode { $pos } === ',') {
-						++ $pos;
+					if ($encode{$pos} === ',') {
+						++$pos;
 					}
 				}
-				++ $pos;
+				++$pos;
 				break;
 			case '"' :
-				switch ($encode { ++ $pos })
-				{
+				switch ($encode{++$pos}) {
 					case '"' :
 						$result = "";
 						break;
@@ -322,15 +331,15 @@ class GantryJSON
 						$result = GantryJSON::_decodeString($encode, $pos);
 						break;
 				}
-				++ $pos;
+				++$pos;
 				break;
 			default :
 				$result = null;
-				$tmp = '';
+				$tmp    = '';
 				preg_replace('/^(\-)?([0-9]+)(\.[0-9]+)?([eE]\+[0-9]+)?/e', '$tmp = "\\1\\2\\3\\4"', substr($encode, $pos));
 				if ($tmp !== '') {
 					$pos += strlen($tmp);
-					$nint = intval($tmp);
+					$nint   = intval($tmp);
 					$nfloat = floatval($tmp);
 					$result = $nfloat == $nint ? $nint : $nfloat;
 				}
@@ -339,21 +348,21 @@ class GantryJSON
 		return $result;
 	}
 
-	function _decodeString(& $encode, & $pos)
+	protected static function _decodeString(& $encode, & $pos)
 	{
 
 		$replacement = GantryJSON::_getStaticReplacement();
-		$endString = GantryJSON::_endString($encode, $pos, $pos);
-		$result = str_replace($replacement['replace'], $replacement['find'], substr($encode, $pos, $endString));
+		$endString   = GantryJSON::_endString($encode, $pos, $pos);
+		$result      = str_replace($replacement['replace'], $replacement['find'], substr($encode, $pos, $endString));
 		$pos += $endString;
 		return $result;
 	}
 
-	function _endString(& $encode, $position, & $pos)
+	protected static function _endString(& $encode, $position, & $pos)
 	{
 		do {
-			$position = strpos($encode, '"', $position +1);
-		} while ($position !== false && GantryJSON::_slashedChar($encode, $position -1));
+			$position = strpos($encode, '"', $position + 1);
+		} while ($position !== false && GantryJSON::_slashedChar($encode, $position - 1));
 
 		if ($position === false) {
 			JError::raiseWorning(500, 'Invalid JSON');
@@ -361,18 +370,17 @@ class GantryJSON
 		return $position - $pos;
 	}
 
-	function _slashedChar(& $encode, $position)
+	protected static function _slashedChar(& $encode, $position)
 	{
 		$pos = 0;
-		while ($encode { $position-- } === '\\')
-		{
+		while ($encode{$position--} === '\\') {
 			$pos++;
 		}
 		return $pos % 2;
 	}
 
-    public static function isJson($string)
-    {
-        return @self::decode($string) != null;
-    }
+	public static function isJson($string)
+	{
+		return @self::decode($string) != null;
+	}
 }

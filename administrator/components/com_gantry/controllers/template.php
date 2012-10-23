@@ -2,7 +2,7 @@
 /**
  * @package   gantry
  * @subpackage core
- * @version   3.2.22 August 3, 2012
+ * @version   4.0.5 September 18, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -58,7 +58,6 @@ class GantryControllerTemplate extends JControllerForm
         if (!in_array($task, array('display', 'edit', 'cancel'))) {
             $cache = JFactory::getCache();
             $cache->clean('com_gantry');
-            $cache->clean('_system');
         }
     }
 
@@ -121,7 +120,7 @@ class GantryControllerTemplate extends JControllerForm
 
     public function save($key = null)
     {
-        $language =& JFactory::getLanguage();
+        $language = JFactory::getLanguage();
         $language->load('com_templates');
         // Check for request forgeries.
         JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -286,7 +285,7 @@ class GantryControllerTemplate extends JControllerForm
 	 */
 	public function duplicate()
 	{
-        $language =& JFactory::getLanguage();
+        $language = JFactory::getLanguage();
         $language->load('com_templates');
 		// Check for request forgeries
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -318,7 +317,7 @@ class GantryControllerTemplate extends JControllerForm
 	 */
 	function delete()
 	{
-        $language =& JFactory::getLanguage();
+        $language = JFactory::getLanguage();
         $language->load('com_templates');
         $language->load('com_gantry');
 

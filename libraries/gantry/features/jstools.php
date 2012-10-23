@@ -1,11 +1,9 @@
 <?php
 /**
- * @package     gantry
- * @subpackage  features
- * @version		3.2.22 August 3, 2012
- * @author		RocketTheme http://www.rockettheme.com
- * @copyright 	Copyright (C) 2007 - 2012 RocketTheme, LLC
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
+ * @version   $Id: jstools.php 2381 2012-08-15 04:14:26Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  *
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
  *
@@ -19,23 +17,31 @@ gantry_import('core.gantryfeature');
  * @package     gantry
  * @subpackage  features
  */
-class GantryFeatureJSTools extends GantryFeature {
-    var $_feature_name = 'jstools';
+class GantryFeatureJSTools extends GantryFeature
+{
+	var $_feature_name = 'jstools';
 
-    function isEnabled(){
-        return true;
-    }
-    function isInPosition($position) {
-        return false;
-    }
-	function isOrderable(){
+	function isEnabled()
+	{
+		return true;
+	}
+
+	function isInPosition($position)
+	{
 		return false;
 	}
-	
 
-	function init() {
-        global $gantry;
-		
+	function isOrderable()
+	{
+		return false;
+	}
+
+
+	function init()
+	{
+		/** @var $gantry Gantry */
+		global $gantry;
+
 		// date
 		if ($gantry->get('date-enabled') && $gantry->get('date-clientside')) {
 			$gantry->addScript('gantry-date.js');
@@ -45,7 +51,7 @@ class GantryFeatureJSTools extends GantryFeature {
 		if ($gantry->get('buildspans-enabled')) {
 			$modules = "['rt-block']";
 			$headers = "['h3','h2','h1']";
-			
+
 			$gantry->addScript('gantry-buildspans.js');
 			$gantry->addInlineScript($this->_buildSpans($modules, $headers));
 		}
@@ -56,30 +62,67 @@ class GantryFeatureJSTools extends GantryFeature {
 			$gantry->addInlineScript("InputsExclusion.push($exclusions)");
 		}
 	}
-	
-	function _dateLanguage() {
-		
+
+	function _dateLanguage()
+	{
+
 		$days = array(
-			'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
-			'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+			'Sun',
+			'Mon',
+			'Tue',
+			'Wed',
+			'Thu',
+			'Fri',
+			'Sat',
+			'Sunday',
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday'
 		);
-		
+
 		$months = array(
-			'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-			'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'		
+			'Jan',
+			'Feb',
+			'Mar',
+			'Apr',
+			'May',
+			'Jun',
+			'Jul',
+			'Aug',
+			'Sep',
+			'Oct',
+			'Nov',
+			'Dec',
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December'
 		);
-		
+
 		return "dayNames:['" . implode("', '", $days) . "'], monthNames:['" . implode("', '", $months) . "']";
 	}
-	
-	function _dateFormat() {
+
+	function _dateFormat()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
-		
+
 		$formats = str_replace("%", "$", $gantry->get('date-formats'));
 
 		$js = "
 			dateFormat.i18n = {
-				".$this->_dateLanguage()."
+				" . $this->_dateLanguage() . "
 			};
 			var dateFeature = new Date().format('$formats');
 			window.addEvent('domready', function() {
@@ -91,13 +134,15 @@ class GantryFeatureJSTools extends GantryFeature {
 				}
 			});
 		";
-		
+
 		return $js;
 	}
-	
-	function _buildSpans($modules, $headers) {
+
+	function _buildSpans($modules, $headers)
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
-		
+
 		$js = "
 			window.addEvent('domready', function() {
 				var modules = $modules;
@@ -105,7 +150,7 @@ class GantryFeatureJSTools extends GantryFeature {
 				GantryBuildSpans(modules, header);
 			});
 		";
-		
+
 		return $js;
 	}
 }

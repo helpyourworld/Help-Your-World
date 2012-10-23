@@ -2,7 +2,7 @@
 /**
  * @package   gantry
  * @subpackage core
- * @version   3.2.22 August 3, 2012
+ * @version   4.0.5 September 18, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -22,7 +22,8 @@ class GantryController extends JController
 {
     public function ajax()
     {
-        global $gantry;
+        /** @var $gantry Gantry */
+		global $gantry;
 
         // comment out the following 2 lines for debugging
         //$request = @$_SERVER['HTTP_X_REQUESTED_WITH'];

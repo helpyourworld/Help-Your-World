@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system">
+	<name>System - Social Login</name>
+	<license>GNU/GPL</license>
+	<author>LoginRadius</author>
+	<authorEmail>developers@loginradius.com</authorEmail>
+	<authorUrl>http://www.loginradius.com</authorUrl>
+	<creationDate>2012-06-11</creationDate>
+	<copyright>2012 to till</copyright>
+	<version>1.6</version>
+	<description>
+	LoginRadius enables social login for your joomla websites.
+</description>
+	<files>
+		<file plugin="sociallogin">sociallogin.php</file>
+		<file>LoginRadius.php</file>
+	</files>
+	<languages>
+		<language tag="en-GB">languages/en-GB.plg_system_sociallogin.ini</language>
+		<language tag="en-GB">languages/en-GB.plg_system_sociallogin.sys.ini</language>
+		<language tag="fr-FR">languages/fr-FR.plg_system_sociallogin.ini</language>
+		<language tag="fr-FR">languages/fr-FR.plg_system_sociallogin.sys.ini</language>
+        <language tag="es-ES">languages/es-ES.plg_system_sociallogin.ini</language>
+		<language tag="es-ES">languages/es-ES.plg_system_sociallogin.sys.ini</language>
+        <language tag="ru-RU">languages/ru-RU.plg_system_sociallogin.ini</language>
+		<language tag="ru-RU">languages/ru-RU.plg_system_sociallogin.sys.ini</language>
+		<language tag="it-IT">languages/it-IT.plg_system_sociallogin.ini</language>
+		<language tag="it-IT">languages/it-IT.plg_system_sociallogin.sys.ini</language>
+		<language tag="de-DE">languages/de-DE.plg_system_sociallogin.ini</language>
+		<language tag="de-DE">languages/de-DE.plg_system_sociallogin.sys.ini</language>
+		<language tag="da-DK">languages/da-DK.plg_system_sociallogin.ini</language>
+		<language tag="da-DK">languages/da-DK.plg_system_sociallogin.sys.ini</language>
+		<language tag="el-GR">languages/el-GR.plg_system_sociallogin.ini</language>
+		<language tag="el-GR">languages/el-GR.plg_system_sociallogin.sys.ini</language>
+		<language tag="uk-UA">languages/uk-UA.plg_system_sociallogin.ini</language>
+		<language tag="uk-UA">languages/uk-UA.plg_system_sociallogin.sys.ini</language>
+		<language tag="ar-AA">languages/ar-AA.plg_system_sociallogin.ini</language>
+		<language tag="ar-AA">languages/ar-AA.plg_system_sociallogin.sys.ini</language>
+		<language tag="nl-NL">languages/nl-NL.plg_system_sociallogin.ini</language>
+		<language tag="nl-NL">languages/nl-NL.plg_system_sociallogin.sys.ini</language>
+		<language tag="et-EE">languages/et-EE.plg_system_sociallogin.ini</language>
+		<language tag="et-EE">languages/et-EE.plg_system_sociallogin.sys.ini</language>
+		<language tag="pl-PL">languages/pl-PL.plg_system_sociallogin.ini</language>
+		<language tag="pl-PL">languages/pl-PL.plg_system_sociallogin.sys.ini</language>
+        <language tag="pt-PT">languages/pt-PT.plg_system_sociallogin.ini</language>
+		<language tag="pt-PT">languages/pt-PT.plg_system_sociallogin.sys.ini</language>
+   </languages>
+   <config>
+		<fields name="params">
+			<fieldset name="basic">
+			   <field
+					name="apikey"
+					type="textarea"
+					filter="safehtml"
+					cols="30"
+					rows="2"
+					label="MOD_LOGINRADIUS_FIELD_API_KEY_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_API_KEY_DESC" />
+					
+				<field
+					name="apisecret"
+					type="textarea"
+					filter="safehtml"
+					cols="30"
+					rows="2"
+					label="MOD_LOGINRADIUS_FIELD_API_SECRET_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_API_SECRET_DESC" />
+				
+				<field
+					name="login"
+					type="menuitem"
+					disable="separator"
+					label="MOD_LOGINRADIUS_FIELD_LOGIN_REDIRECTURL_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_LOGIN_REDIRECTURL_DESC" >
+					<option 
+						value="">JDEFAULT</option>
+				</field>
+				<field
+					name="name"
+					type="list"
+					default="0"
+					label="MOD_LOGINRADIUS_FIELD_NAME_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_NAME_DESC">
+					<option
+						value="0">MOD_LOGINRADIUS_VALUE_NAME</option>
+					<option
+						value="1">MOD_LOGINRADIUS_VALUE_USERNAME</option>
+				</field>
+				<field
+					name="dummyemail"
+					type="list"
+					default="0"
+					label="MOD_LOGINRADIUS_FIELD_EMAIL_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_EMAIL_DESC">
+					<option value="0">JYes</option>
+                    <option value="1">JNo</option>
+				</field>
+				<field
+					name="apicred"
+					type="list"
+					default="0"
+					label="MOD_LOGINRADIUS_FIELD_APICRED_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_APICRED_LABEL">
+					<option value="0">MOD_LOGINRADIUS_VALUE_CURL</option>
+                    <option value="1">MOD_LOGINRADIUS_VALUE_FSKOPEN</option>
+				</field>
+				<field
+					name="usetrad"
+					type="radio"
+					default="1"
+					label="MOD_LOGINRADIUS_FIELD_USETRAD_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_USETRAD_DESC">
+					<option
+						value="0">JNo</option>
+					<option
+						value="1">JYes</option>
+				</field>
+				<field
+					name="showlogout"
+					type="radio"
+					default="1"
+					label="MOD_LOGINRADIUS_FIELD_LOGOUT_LABEL"
+					description="MOD_LOGINRADIUS_FIELD_LOGOUT_DESC">
+					<option
+						value="0">JNo</option>
+					<option
+						value="1">JYes</option>
+				</field>
+				<field 
+				      name="showbutton" 
+					  type="list" 
+					  default="0" 
+					  label="PLG_LOGINRADIUS_FIELD_SHOWBUTTON_LABEL" 
+					  description="PLG_LOGINRADIUS_FIELD_SHOWBUTTON_DESC">
+		               <option value="0">PLG_LOGINRADIUS_VALUE_TOP</option>
+                       <option value="1">PLG_LOGINRADIUS_VALUE_BOTTOM</option>
+		       </field>
+		       <field 
+			   name="sendadminmail" 
+			   type="radio" 
+			   default="1" 
+			   label="PLG_LOGINRADIUS_FIELD_ADMINMAIL_LABEL" 
+			   description="PLG_LOGINRADIUS_FIELD_ADMINMAIL_DESC">
+		       <option value="0">No</option>
+		       <option value="1">Yes</option>
+		       </field>
+				<field name="k2id" type="text" default="1" label="PLG_LOGINRADIUS_FIELD_K2ID_LABEL" description="PLG_LOGINRADIUS_FIELD_K2ID_DESC" size ="2" />
+				
+			</fieldset>
+			</fields>
+	</config>
+</extension>

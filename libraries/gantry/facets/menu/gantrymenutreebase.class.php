@@ -1,9 +1,9 @@
 <?php
 /**
- * @version		3.2.22 August 3, 2012
- * @author		RocketTheme http://www.rockettheme.com
- * @copyright 	Copyright (C) 2007 - 2012 RocketTheme, LLC
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
+ * @version   $Id: gantrymenutreebase.class.php 2325 2012-08-13 17:46:48Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  *
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
  *
@@ -12,17 +12,18 @@ defined('GANTRY_VERSION') or die('Restricted access');
 
 jimport('joomla.base.tree');
 
-class GantryMenuTreeBase {
+class GantryMenuTreeBase
+{
 
 
- 	/**
+	/**
 	 * Base ID for the menu  as ultimate parent
 	 */
 	var $id = 1;
-	var $parent 	= 0;
+	var $parent = 0;
 	var $_parentRef = null;
-	var $level 		= -1;
-	var $access 	= 2;
+	var $level = -1;
+	var $access = 2;
 
 	var $_check_access_level = null;
 
@@ -32,21 +33,22 @@ class GantryMenuTreeBase {
 	{
 		$this->_params = &$params;
 	}
+
 	/**
 	 * Menu parameters
 	 */
 	var $_params = null;
 
-	function addChild(&$node) {
-		if (!$node->isAccessable()){
+	function addChild(&$node)
+	{
+		if (!$node->isAccessable()) {
 			return true;
 		}
-		if ( $this->id == $node->parent) {
-			$node->_parentRef = &$this;
-			$this->_children[$node->id] = & $node;
+		if ($this->id == $node->parent) {
+			$node->_parentRef           = &$this;
+			$this->_children[$node->id] =& $node;
 			return true;
-		}
-		else if ($this->hasChildren()) {
+		} else if ($this->hasChildren()) {
 			reset($this->_children);
 			while (list($key, $value) = each($this->_children)) {
 				$child =& $this->_children[$key];
@@ -58,7 +60,7 @@ class GantryMenuTreeBase {
 		return false;
 	}
 
- 	function hasChildren()
+	function hasChildren()
 	{
 		return count($this->_children);
 	}
@@ -68,26 +70,28 @@ class GantryMenuTreeBase {
 		return $this->_children;
 	}
 
-	function setParameters($params) {
+	function setParameters($params)
+	{
 
 		$this->_params = new GantryRegistry($params->toObject());
 	}
 
-	function getParameter($param) {
+	function getParameter($param)
+	{
 		if (null == $param || null == $this->_params) {
 			return null;
 		}
 		return $this->_params->get($param);
 	}
 
-	function &findChild($node_id) {
+	function &findChild($node_id)
+	{
 		if (array_key_exists($node_id, $this->_children)) {
 			return $this->_children[$node_id];
-		}
-		else if ($this->hasChildren()) {
+		} else if ($this->hasChildren()) {
 			reset($this->_children);
 			while (list($key, $value) = each($this->_children)) {
-				$child =& $this->_children[$key];
+				$child       =& $this->_children[$key];
 				$wanted_node = $child->findChild($node_id);
 				if ($wanted_node !== false) {
 					return $wanted_node;
@@ -98,16 +102,16 @@ class GantryMenuTreeBase {
 		return $ret;
 	}
 
-	function removeChild($node_id) {
+	function removeChild($node_id)
+	{
 		if (array_key_exists($node_id, $this->_children)) {
 			unset($this->_children[$node_id]);
 			return true;
-		}
-		else if ($this->hasChildren()) {
+		} else if ($this->hasChildren()) {
 			reset($this->_children);
 			while (list($key, $value) = each($this->_children)) {
 				$child =& $this->_children[$key];
-				$ret = $child->removeChild($node_id);
+				$ret   = $child->removeChild($node_id);
 				if ($ret === true) {
 					return $ret;
 				}
@@ -116,11 +120,11 @@ class GantryMenuTreeBase {
 		return false;
 	}
 
-	function removeLevel($end) {
-		if ( $this->level == $end ) {
+	function removeLevel($end)
+	{
+		if ($this->level == $end) {
 			$this->_children = array();
-		}
-		else if ($this->level < $end) {
+		} else if ($this->level < $end) {
 			if ($this->hasChildren()) {
 				reset($this->_children);
 				while (list($key, $value) = each($this->_children)) {
@@ -131,20 +135,20 @@ class GantryMenuTreeBase {
 		}
 	}
 
-	function removeIfNotInTree(&$active_tree, $last_active) {
+	function removeIfNotInTree(&$active_tree, $last_active)
+	{
 		if (!empty($active_tree)) {
 
-			if (in_array((int)$this->id, $active_tree)  && $last_active == $this->id) {
+			if (in_array((int)$this->id, $active_tree) && $last_active == $this->id) {
 				// i am the last node in the active tree
 				if ($this->hasChildren()) {
 					reset($this->_children);
 					while (list($key, $value) = each($this->_children)) {
-						$child =& $this->_children[$key];
+						$child            =& $this->_children[$key];
 						$child->_children = array();
 					}
 				}
-			}
-			else if (in_array((int)$this->id, $active_tree)) {
+			} else if (in_array((int)$this->id, $active_tree)) {
 				// i am in the active tree but not the last node
 				if ($this->hasChildren()) {
 					reset($this->_children);
@@ -153,15 +157,15 @@ class GantryMenuTreeBase {
 						$child->removeIfNotInTree($active_tree, $last_active);
 					}
 				}
-			}
-			else {
+			} else {
 				// i am not in the active tree
 				$this->_children = array();
 			}
 		}
 	}
 
-	function isAccessable(){
+	function isAccessable()
+	{
 //		$user =& JFactory::getUser();
 //        $groups		= implode(',', $user->getAuthorisedViewLevels());
 //
@@ -178,12 +182,13 @@ class GantryMenuTreeBase {
 //			return false;
 //		}
 
-        return true;
+		return true;
 	}
 
 
-	function getParent() {
+	function getParent()
+	{
 		return $this->_parentRef;
 	}
 
- }
+}

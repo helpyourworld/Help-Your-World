@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: gantry.php 2381 2012-08-15 04:14:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -12,25 +12,24 @@ defined('GANTRY_VERSION') or die();
  */
 gantry_import('core.config.gantryformfield');
 
-class GantryFormFieldGANTRY extends GantryFormField {
-    
-	protected $type = 'gantry';
-    protected $basetype = 'none';
+class GantryFormFieldGANTRY extends GantryFormField
+{
 
-	public function getInput(){
+	protected $type = 'gantry';
+	protected $basetype = 'none';
+
+	public function getInput()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
-		
-		if (!defined('GANTRY_CSS')) {
-			$gantry->addStyle($gantry->gantryUrl.'/admin/widgets/gantry.css');
-			$gantry->addInlineScript("var GantryTemplate = '".$gantry->templateName."', GantryParamsPrefix = 'jform_params_', GantryAjaxURL = '".$gantry->getAjaxUrl()."'; GantryURL = '".$gantry->gantryUrl."';");
-			$gantry->addInlineScript($this->_gantryLang());
-			define('GANTRY_CSS', 1);
-		}
-		
+		$gantry->addInlineScript("var GantryTemplate = '" . $gantry->templateName . "', GantryParamsPrefix = 'jform_params_', GantryAjaxURL = '" . $gantry->getAjaxUrl() . "'; GantryURL = '" . $gantry->gantryUrl . "';");
+		$gantry->addInlineScript($this->_gantryLang());
+
 		return null;
 	}
-	
-	protected function _gantryLang(){
+
+	protected function _gantryLang()
+	{
 		return "
 			GantryLang = {
 				'preset_title': '" . JText::_('PRESET_TITLE') . "',
@@ -40,7 +39,7 @@ class GantryFormFieldGANTRY extends GantryFormField {
 				'preset_naming': '" . JText::_('PRESET_NAMING') . "',
 				'preset_skip': '" . JText::_('PRESET_SKIP') . "',
 				'success_save': '" . JText::_('SUCCESS_SAVE') . "',
-				'success_msg': '" .JText::_('SUCCESS_MSG') . "',
+				'success_msg': '" . JText::_('SUCCESS_MSG') . "',
 				'fail_save': '" . JText::_('FAIL_SAVE') . "',
 				'fail_msg': '" . JText::_('FAIL_MSG') . "',
 				'cancel': '" . JText::_('CANCEL') . "',
@@ -51,9 +50,10 @@ class GantryFormFieldGANTRY extends GantryFormField {
 			};
 		";
 	}
-	
-	public function getLabel(){
-        return "";
-    }
-	
+
+	public function getLabel()
+	{
+		return "";
+	}
+
 }

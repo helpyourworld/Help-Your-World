@@ -1,8 +1,6 @@
 <?php
 /**
- * @package   gantry
- * @subpackage html.layouts
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: orderedbody_mainbody.php 2381 2012-08-15 04:14:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -16,7 +14,7 @@ gantry_import('core.gantrylayout');
 
 /**
  *
- * @package gantry
+ * @package    gantry
  * @subpackage html.layouts
  */
 class GantryLayoutOrderedBody_MainBody extends GantryLayout {
@@ -30,7 +28,8 @@ class GantryLayoutOrderedBody_MainBody extends GantryLayout {
         'extraClass' => ''
     );
     function render($params = array()){
-        global $gantry;
+        /** @var $gantry Gantry */
+		global $gantry;
 
         $fparams = $this-> _getParams($params);
 
@@ -40,7 +39,7 @@ class GantryLayoutOrderedBody_MainBody extends GantryLayout {
 
 		$mbClasses = trim("rt-grid-" . trim($fparams->schema['mb'] . " " . $fparams->pushPull[0] . " " . $fparams->extraClass));
 		$mbClasses = preg_replace('/\s\s+/', ' ', $mbClasses);
-		
+
 // XHTML LAYOUT
 ?>          <div id="rt-main" class="<?php echo $fparams->classKey; ?>">
                 <div class="rt-container">

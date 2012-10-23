@@ -2,12 +2,12 @@
 <extension group="editors" method="upgrade" type="plugin" version="2.5">
 	<name>Editor - RokPad</name>
 	<author>RocketTheme, LLC</author>
-	<creationDate>August 13, 2012</creationDate>
+	<creationDate>September 17, 2012</creationDate>
 	<copyright>(C) 2005 - 2012 RocketTheme, LLC. All rights reserved.</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>support@rockettheme.com</authorEmail>
 	<authorUrl>http://www.rockettheme.com</authorUrl>
-	<version>2.0.0</version>
+	<version>2.0.4</version>
 	<description><![CDATA[
         <div class="rokpad-description">
         <img src="../plugins/editors/rokpad/assets/admin/images/rokpad.jpg" class="img-padding" /><h1>RokPad</h1>

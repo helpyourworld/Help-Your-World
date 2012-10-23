@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: category.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla.Framework
- * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @version        $Id: category.php 2325 2012-08-13 17:46:48Z btowles $
+ * @package        Joomla.Framework
+ * @subpackage     Form
+ * @copyright      Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @license        GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
@@ -17,31 +17,31 @@ JFormHelper::loadFieldClass('list');
 /**
  * Supports an HTML select list of categories
  *
- * @package		Joomla.Framework
- * @subpackage	Form
- * @since		1.6
+ * @package        Joomla.Framework
+ * @subpackage     Form
+ * @since          1.6
  */
 class GantryFormFieldCategory extends GantryFormFieldSelectBox
 {
 	/**
-	 * @var		string	The form field type.
-	 * @since	1.6
+	 * @var        string    The form field type.
+	 * @since    1.6
 	 */
 	public $type = 'category';
-    protected $basetype = 'select';
+	protected $basetype = 'select';
 
 	/**
 	 * Method to get the field options.
 	 *
-	 * @return	array	The field option objects.
-	 * @since	1.6
+	 * @return    array    The field option objects.
+	 * @since    1.6
 	 */
 	protected function getOptions()
 	{
 		// Initialise variables.
-		$options	= array();
-		$extension	= $this->element['extension'] ? (string) $this->element['extension'] : (string) $this->element['scope'];
-		$published	= (string) $this->element['published'];
+		$options   = array();
+		$extension = $this->element['extension'] ? (string)$this->element['extension'] : (string)$this->element['scope'];
+		$published = (string)$this->element['published'];
 
 		// Load the category options for a given extension.
 		if (!empty($extension)) {
@@ -49,34 +49,31 @@ class GantryFormFieldCategory extends GantryFormFieldSelectBox
 			// Filter over published state or not depending upon if it is present.
 			if ($published) {
 				$options = JHtml::_('category.options', $extension, array('filter.published' => explode(',', $published)));
-			}
-			else {
+			} else {
 				$options = JHtml::_('category.options', $extension);
 			}
 
 			// Verify permissions.  If the action attribute is set, then we scan the options.
-			if ($action	= (string) $this->element['action']) {
+			if ($action = (string)$this->element['action']) {
 
 				// Get the current user object.
 				$user = JFactory::getUser();
-			
-				foreach($options as $i => $option)
-				{
+
+				foreach ($options as $i => $option) {
 					// To take save or create in a category you need to have create rights for that category
 					// unless the item is already in that category.
 					// Unset the option if the user isn't authorised for it. In this field assets are always categories.
-					if ($user->authorise('core.create', $extension.'.category.'.$option->value) != true ) {
+					if ($user->authorise('core.create', $extension . '.category.' . $option->value) != true) {
 						unset($options[$i]);
 					}
 				}
-				
+
 			}
 
 			if (isset($this->element['show_root'])) {
 				array_unshift($options, JHtml::_('select.option', '0', JText::_('-- Select Category --')));
 			}
-		}
-		else {
+		} else {
 			JError::raiseWarning(500, JText::_('JLIB_FORM_ERROR_FIELDS_CATEGORY_ERROR_EXTENSION_EMPTY'));
 		}
 

@@ -1,8 +1,6 @@
 <?php
 /**
- * @package   gantry
- * @subpackage html.layouts
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: body_mainbody.php 2649 2012-08-22 22:15:17Z rhuk $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -16,7 +14,7 @@ gantry_import('core.gantrylayout');
 
 /**
  *
- * @package gantry
+ * @package    gantry
  * @subpackage html.layouts
  */
 class GantryLayoutBody_MainBody extends GantryLayout {
@@ -29,9 +27,10 @@ class GantryLayoutBody_MainBody extends GantryLayout {
         'contentBottom' =>  null
     );
     function render($params = array()){
-        global $gantry;
+        /** @var $gantry Gantry */
+		global $gantry;
 
-        $fparams = $this-> _getParams($params);
+        $fparams = $this->_getParams($params);
 
         // logic to determine if the component should be displayed
         $display_component = !($gantry->get("component-enabled",true) == false && JRequest::getVar('view') == 'featured');

@@ -1,46 +1,40 @@
 /*
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * Copyright (c) 2010, Ajax.org B.V.
+ * All rights reserved.
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Ajax.org B.V. nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Ajax.org Code Editor (ACE).
- *
- * The Initial Developer of the Original Code is
- * Ajax.org B.V.
- * Portions created by the Initial Developer are Copyright (C) 2010
- * the Initial Developer. All Rights Reserved.
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL AJAX.ORG B.V. BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 "no use strict";var console={log:function(a){postMessage({type:"log",data:a});}};var window={console:console};var normalizeModule=function(e,a){if(a.indexOf("!")!==-1){var d=a.split("!");
 return normalizeModule(e,d[0])+"!"+normalizeModule(e,d[1]);}if(a.charAt(0)=="."){var c=e.split("/").slice(0,-1).join("/");var a=c+"/"+a;while(a.indexOf(".")!==-1&&b!=a){var b=a;
-var a=a.replace(/\/\.\//,"/").replace(/[^\/]+\/\.\.\//,"");}}return a;};var require=function(e,d){var d=normalizeModule(e,d);var a=require.modules[d];if(a){if(!a.initialized){a.exports=a.factory().exports;
-a.initialized=true;}return a.exports;}var c=d.split("/");c[0]=require.tlns[c[0]]||c[0];var b=c.join("/")+".js";require.id=d;importScripts(b);return require(e,d);
-};require.modules={};require.tlns={};var define=function(d,c,a){if(arguments.length==2){a=c;}else{if(arguments.length==1){a=d;d=require.id;}}if(d.indexOf("text!")===0){return;
-}var b=function(f,e){return require(d,f,e);};require.modules[d]={factory:function(){var e={exports:{}};var f=a(b,e.exports,e);if(f){e.exports=f;}return e;
-}};};function initBaseUrls(a){require.tlns=a;}function initSender(){var c=require(null,"ace/lib/event_emitter").EventEmitter;var b=require(null,"ace/lib/oop");
-var a=function(){};(function(){b.implement(this,c);this.callback=function(e,d){postMessage({type:"call",id:d,data:e});};this.emit=function(d,e){postMessage({type:"event",name:d,data:e});
-};}).call(a.prototype);return new a();}var main;var sender;onmessage=function(b){var c=b.data;if(c.command){main[c.command].apply(main,c.args);}else{if(c.init){initBaseUrls(c.tlns);
-require(null,"ace/lib/fixoldbrowsers");sender=initSender();var a=require(null,c.module)[c.classname];main=new a(sender);}else{if(c.event&&sender){sender._emit(c.event,c.data);
-}}}};
+var a=a.replace(/\/\.\//,"/").replace(/[^\/]+\/\.\.\//,"");}}return a;};var require=function(e,d){var d=normalizeModule(e,d);var a=require.modules[d];if(a){if(!a.initialized){a.initialized=true;
+a.exports=a.factory().exports;}return a.exports;}var c=d.split("/");c[0]=require.tlns[c[0]]||c[0];var b=c.join("/")+".js";require.id=d;importScripts(b);
+return require(e,d);};require.modules={};require.tlns={};var define=function(d,c,a){if(arguments.length==2){a=c;if(typeof d!="string"){c=d;d=require.id;
+}}else{if(arguments.length==1){a=d;d=require.id;}}if(d.indexOf("text!")===0){return;}var b=function(f,e){return require(d,f,e);};require.modules[d]={factory:function(){var e={exports:{}};
+var f=a(b,e.exports,e);if(f){e.exports=f;}return e;}};};function initBaseUrls(a){require.tlns=a;}function initSender(){var c=require(null,"ace/lib/event_emitter").EventEmitter;
+var b=require(null,"ace/lib/oop");var a=function(){};(function(){b.implement(this,c);this.callback=function(e,d){postMessage({type:"call",id:d,data:e});
+};this.emit=function(d,e){postMessage({type:"event",name:d,data:e});};}).call(a.prototype);return new a();}var main;var sender;onmessage=function(b){var c=b.data;
+if(c.command){main[c.command].apply(main,c.args);}else{if(c.init){initBaseUrls(c.tlns);require(null,"ace/lib/fixoldbrowsers");sender=initSender();var a=require(null,c.module)[c.classname];
+main=new a(sender);}else{if(c.event&&sender){sender._emit(c.event,c.data);}}}};
 /*!
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
@@ -108,10 +102,10 @@ if(!String.prototype.trim||ag.trim()){ag="["+ag+"]";var F=new RegExp("^"+ag+ag+"
 };}var U=function(aj){aj=+aj;if(aj!==aj){aj=0;}else{if(aj!==0&&aj!==(1/0)&&aj!==-(1/0)){aj=(aj>0||-1)*Math.floor(Math.abs(aj));}}return aj;};var H="a"[0]!="a",L=function(aj){if(aj==null){throw new TypeError();
 }if(H&&typeof aj=="string"&&aj){return aj.split("");}return Object(aj);};});define("ace/lib/event_emitter",["require","exports","module"],function(b,a,c){var d={};
 d._emit=d._dispatchEvent=function(f,k){this._eventRegistry=this._eventRegistry||{};this._defaultHandlers=this._defaultHandlers||{};var j=this._eventRegistry[f]||[];
-var g=this._defaultHandlers[f];if(!j.length&&!g){return;}k=k||{};k.type=f;if(!k.stopPropagation){k.stopPropagation=function(){this.propagationStopped=true;
+var g=this._defaultHandlers[f];if(!j.length&&!g){return;}if(typeof k!="object"||!k){k={};}if(!k.type){k.type=f;}if(!k.stopPropagation){k.stopPropagation=function(){this.propagationStopped=true;
 };}if(!k.preventDefault){k.preventDefault=function(){this.defaultPrevented=true;};}for(var h=0;h<j.length;h++){j[h](k);if(k.propagationStopped){break;}}if(g&&!k.defaultPrevented){return g(k);
 }};d.setDefaultHandler=function(e,f){this._defaultHandlers=this._defaultHandlers||{};if(this._defaultHandlers[e]){throw new Error("The default handler for '"+e+"' is already set");
-}this._defaultHandlers[e]=f;};d.on=d.addEventListener=function(e,g){this._eventRegistry=this._eventRegistry||{};var f=this._eventRegistry[e];if(!f){var f=this._eventRegistry[e]=[];
+}this._defaultHandlers[e]=f;};d.on=d.addEventListener=function(e,g){this._eventRegistry=this._eventRegistry||{};var f=this._eventRegistry[e];if(!f){f=this._eventRegistry[e]=[];
 }if(f.indexOf(g)==-1){f.push(g);}};d.removeListener=d.removeEventListener=function(e,h){this._eventRegistry=this._eventRegistry||{};var g=this._eventRegistry[e];
 if(!g){return;}var f=g.indexOf(h);if(f!==-1){g.splice(f,1);}};d.removeAllListeners=function(e){if(this._eventRegistry){this._eventRegistry[e]=[];}};a.EventEmitter=d;
 });define("ace/lib/oop",["require","exports","module"],function(b,a,c){a.inherits=(function(){var d=function(){};return function(f,e){d.prototype=e.prototype;
@@ -194,11 +188,11 @@ h=0;}}}}}}this.setPosition(j,h,true);};this.setPosition=function(j,i,g){var k;if
 };var d=/^\s\s*/;var e=/\s\s*$/;a.stringTrimLeft=function(f){return f.replace(d,"");};a.stringTrimRight=function(f){return f.replace(e,"");};a.copyObject=function(g){var h={};
 for(var f in g){h[f]=g[f];}return h;};a.copyArray=function(j){var h=[];for(var g=0,f=j.length;g<f;g++){if(j[g]&&typeof j[g]=="object"){h[g]=this.copyObject(j[g]);
 }else{h[g]=j[g];}}return h;};a.deepCopy=function(g){if(typeof g!="object"){return g;}var h=g.constructor();for(var f in g){if(typeof g[f]=="object"){h[f]=this.deepCopy(g[f]);
-}else{h[f]=g[f];}}return h;};a.arrayToMap=function(f){var h={};for(var g=0;g<f.length;g++){h[f[g]]=1;}return h;};a.arrayRemove=function(h,g){for(var f=0;
-f<=h.length;f++){if(g===h[f]){h.splice(f,1);}}};a.escapeRegExp=function(f){return f.replace(/([.*+?^${}()|[\]\/\\])/g,"\\$1");};a.getMatchOffsets=function(g,f){var h=[];
-g.replace(f,function(i){h.push({offset:arguments[arguments.length-2],length:i.length});});return h;};a.deferredCall=function(g){var i=null;var h=function(){i=null;
-g();};var f=function(j){f.cancel();i=setTimeout(h,j||0);return f;};f.schedule=f;f.call=function(){this.cancel();g();return f;};f.cancel=function(){clearTimeout(i);
-i=null;return f;};return f;};});define("ace/mode/json/json_parse",["require","exports","module"],function(f,i,d){var e,b,a={'"':'"',"\\":"\\","/":"/",b:"\b",f:"\f",n:"\n",r:"\r",t:"\t"},p,n=function(q){throw {name:"SyntaxError",message:q,at:e,text:p};
+}else{h[f]=g[f];}}return h;};a.arrayToMap=function(f){var h={};for(var g=0;g<f.length;g++){h[f[g]]=1;}return h;};a.createMap=function(g){var h=Object.create(null);
+for(var f in g){h[f]=g[f];}return h;};a.arrayRemove=function(h,g){for(var f=0;f<=h.length;f++){if(g===h[f]){h.splice(f,1);}}};a.escapeRegExp=function(f){return f.replace(/([.*+?^${}()|[\]\/\\])/g,"\\$1");
+};a.getMatchOffsets=function(g,f){var h=[];g.replace(f,function(i){h.push({offset:arguments[arguments.length-2],length:i.length});});return h;};a.deferredCall=function(g){var i=null;
+var h=function(){i=null;g();};var f=function(j){f.cancel();i=setTimeout(h,j||0);return f;};f.schedule=f;f.call=function(){this.cancel();g();return f;};
+f.cancel=function(){clearTimeout(i);i=null;return f;};return f;};});define("ace/mode/json/json_parse",["require","exports","module"],function(f,i,d){var e,b,a={'"':'"',"\\":"\\","/":"/",b:"\b",f:"\f",n:"\n",r:"\r",t:"\t"},p,n=function(q){throw {name:"SyntaxError",message:q,at:e,text:p};
 },j=function(q){if(q&&q!==b){n("Expected '"+q+"' instead of '"+b+"'");}b=p.charAt(e);e+=1;return b;},h=function(){var r,q="";if(b==="-"){q="-";j("-");}while(b>="0"&&b<="9"){q+=b;
 j();}if(b==="."){q+=".";while(j()&&b>="0"&&b<="9"){q+=b;}}if(b==="e"||b==="E"){q+=b;j();if(b==="-"||b==="+"){q+=b;j();}while(b>="0"&&b<="9"){q+=b;j();}}r=+q;
 if(isNaN(r)){n("Bad number");}else{return r;}},k=function(){var t,s,r="",q;if(b==='"'){while(j()){if(b==='"'){j();return r;}else{if(b==="\\"){j();if(b==="u"){q=0;

@@ -1,11 +1,9 @@
 <?php
 /**
- * @package     gantry
- * @subpackage  features
- * @version		3.2.22 August 3, 2012
- * @author		RocketTheme http://www.rockettheme.com
- * @copyright 	Copyright (C) 2007 - 2012 RocketTheme, LLC
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
+ * @version   $Id: iphoneimages.php 2381 2012-08-15 04:14:26Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  *
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
  *
@@ -19,34 +17,40 @@ gantry_import('core.gantryfeature');
  * @package     gantry
  * @subpackage  features
  */
-class GantryFeatureIphoneImages extends GantryFeature {
-    var $_feature_name = 'iphoneimages';
+class GantryFeatureIphoneImages extends GantryFeature
+{
+	var $_feature_name = 'iphoneimages';
 
-	function isEnabled() {
+	function isEnabled()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
 
 		if (!$gantry->browser) return false;
 
-		$prefix = $gantry->get('template_prefix');
-		$cookiename = $prefix.$gantry->browser->platform.'-switcher';
-		$cookie = $gantry->retrieveTemp('platform', $cookiename);
+		$prefix     = $gantry->get('template_prefix');
+		$cookiename = $prefix . $gantry->browser->platform . '-switcher';
+		$cookie     = $gantry->retrieveTemp('platform', $cookiename);
 
-		if ($cookie != '' && !$cookie || !$gantry->get($gantry->browser->platform.'-enabled') || !$this->get('enabled')) return false;
-		else return true;
+		if ($cookie != '' && !$cookie || !$gantry->get($gantry->browser->platform . '-enabled') || !$this->get('enabled')) return false; else return true;
 	}
 
-	function init() {
-        global $gantry;
+	function init()
+	{
+		/** @var $gantry Gantry */
+		global $gantry;
 
 		$gantry->addInlineScript($this->_js());
 
 	}
 
-	function _js() {
+	function _js()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
 
 		$percentage = $this->get('percentage');
-		$minWidth = $this->get('minWidth');
+		$minWidth   = $this->get('minWidth');
 
 		return "
 			window.addEvent('load', function() {
@@ -60,8 +64,8 @@ class GantryFeatureIphoneImages extends GantryFeature {
 					};
 					backup = size;
 					size = {
-						width: size.width - (size.width * ".$percentage." / 100),
-						height: size.height - (size.height * ".$percentage." / 100)
+						width: size.width - (size.width * " . $percentage . " / 100),
+						height: size.height - (size.height * " . $percentage . " / 100)
 					};
 
 					if (size.width > winsize.x) {
@@ -72,7 +76,7 @@ class GantryFeatureIphoneImages extends GantryFeature {
 							height: height - 30
 						}
 					}
-					if (backup.width > ".$minWidth." && backup.width != 0) {
+					if (backup.width > " . $minWidth . " && backup.width != 0) {
 						img.setProperty('width', size.width).setProperty('height', size.height).setStyles(size);
 					}
 				});

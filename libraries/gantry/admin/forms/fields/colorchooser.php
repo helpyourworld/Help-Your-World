@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   3.2.22 August 3, 2012
+ * @version   $Id: colorchooser.php 2855 2012-08-29 19:01:20Z rhuk $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -13,45 +13,48 @@ defined('GANTRY_VERSION') or die();
  */
 gantry_import('core.config.gantryformfield');
 
-class GantryFormFieldColorChooser extends GantryFormField {
+class GantryFormFieldColorChooser extends GantryFormField
+{
 
-    protected $type = 'colorchooser';
-    protected $basetype = 'text';
+	protected $type = 'colorchooser';
+	protected $basetype = 'text';
 
-	public function getInput(){
-        //($name, $value, &$node, $control_name)
-		//global $stylesList;
-        /**
-         * @global Gantry $gantry
-         */
+	static $assets_loaded = false;
+
+	public function getInput()
+	{
+		/** @var $gantry Gantry */
 		global $gantry;
 		$output = '';
 
-		$this->template = end(explode(DS, $gantry->templatePath));
-		$transparent = 1;
-		
+		$expl_path = explode('/', $gantry->templatePath);
+		$this->template = end($expl_path);
+		$transparent    = 1;
+
 		if ($this->element->attributes('transparent') == 'false') $transparent = 0;
-            if (!defined('GANTRY_CSS')) {
-			$gantry->addStyle($gantry->gantryUrl.'/admin/widgets/gantry.css');
+		if (!defined('GANTRY_CSS')) {
+			$gantry->addStyle($gantry->gantryUrl . '/admin/widgets/gantry.css');
 			define('GANTRY_CSS', 1);
 		}
-		
-		if (!defined('GANTRY_MOORAINBOW')) {
-			
-			$gantry->addStyle($gantry->gantryUrl.'/admin/widgets/colorchooser/css/mooRainbow.css');
-			$gantry->addScript($gantry->gantryUrl.'/admin/widgets/colorchooser/js/mooRainbow.js');
-			$gantry->addScript($gantry->gantryUrl.'/admin/widgets/colorchooser/js/colorchooser.js');
-			
-			define('GANTRY_MOORAINBOW',1);
-		}
-				
-		$gantry->addDomReadyScript("GantryColorChooser.add('".$this->id."', ".$transparent.");");
 
-		$output .= "<div class='wrapper'>";
-		$output .= "<input class=\"picker-input text-color\" id=\"".$this->id."\" name=\"".$this->name."\" type=\"text\" size=\"7\" maxlength=\"11\" value=\"".$this->value."\" />";
-		$output .= "<div class=\"picker\" id=\"myRainbow_".$this->id."_input\"><div class=\"overlay".(($this->value == 'transparent') ? ' overlay-transparent' : '')."\" style=\"background-color: ".$this->value."\"><div></div></div></div>\n";
-		$output .= "</div>";
-		
-		return $output;
+		if (!self::$assets_loaded){
+			$gantry->addStyle($gantry->gantryUrl . '/admin/widgets/colorchooser/css/mooRainbow-2.0.css');
+			$gantry->addScript($gantry->gantryUrl . '/admin/widgets/colorchooser/js/mooRainbow-2.0.js');
+
+			self::$assets_loaded = true;
+		}
+
+		$output = array();
+
+		$output[] = '<div class="wrapper">';
+		$output[] = '	<input class="picker-input text-color" data-moorainbow data-moorainbow-transparent="' . $transparent . '" id="' . $this->id . '" name="' . $this->name . '" type="text" value="' . $this->value . '" />';
+		$output[] = '	<div class="picker" data-moorainbow-trigger="' . $this->id . '">';
+		$output[] = '		<div class="overlay' . (($this->value == 'transparent') ? ' overlay-transparent' : '') . '" style="background-color: ' . $this->value . '">';
+		$output[] = '			<div></div>';
+		$output[] = '		</div>';
+		$output[] = ' 	</div>';
+		$output[] = '</div>';
+
+		return implode("\n", $output);
 	}
 }
