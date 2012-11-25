@@ -35,6 +35,8 @@ class JFormFieldBoostList extends JFormField
 	 */
 	protected $options = array();
 
+	public static $assets_loaded = false;
+
 	/**
 	 * @param $name
 	 *
@@ -97,6 +99,13 @@ class JFormFieldBoostList extends JFormField
 		// Initialize variables.
 		$html = array();
 		$attr = '';
+
+		if (!self::$assets_loaded){
+			$doc = JFactory::getDocument();
+			$doc->addStyleSheet(JURI::root(true).'/plugins/system/rokbooster/fields/assets/bootlist/css/bootlist.css');
+			$doc->addScript(JURI::root(true).'/plugins/system/rokbooster/fields/assets/bootlist/js/Dropdowns.js');
+			self::$assets_loaded = true;
+		}
 
 		// Initialize some field attributes.
 		$attr .= $this->element['class'] ? ' class="' . (string)$this->element['class'] . '"' : '';

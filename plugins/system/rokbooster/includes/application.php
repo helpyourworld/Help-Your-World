@@ -2,19 +2,15 @@
 /**
  * @version   $Id$
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
 // no direct access
 defined('JPATH_PLATFORM') or die;
 
-final class JAdministrator extends JApplication
+class RTRenderer
 {
-	public function initialise($options = array())
-	{
-	}
-
 	/**
 	 * Display the application.
 	 */
@@ -22,8 +18,8 @@ final class JAdministrator extends JApplication
 	{
 		$user = JFactory::getUser();
 		$conf = JFactory::getConfig();
-		if (!$user->guest) {
-			if (JFactory::getUser()->authorise('core.admin', 'com_cache')) {
+		if ($user->id!=0) {
+			if ($user->authorise('core.admin', 'com_cache')) {
 				$file_cache = new JCache(array(
 				                              'defaultgroup'   => 'rokbooster',
 				                              'caching'        => true,
@@ -62,7 +58,6 @@ final class JAdministrator extends JApplication
 			else {
 				echo '{"status": "error","message":"You do not have permissions to clear cache."}';
 			}
-
 		}
 	}
 }

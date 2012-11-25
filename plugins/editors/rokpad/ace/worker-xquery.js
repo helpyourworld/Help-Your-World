@@ -35,7 +35,7 @@ var b=require(null,"ace/lib/oop");var a=function(){};(function(){b.implement(thi
 };this.emit=function(d,e){postMessage({type:"event",name:d,data:e});};}).call(a.prototype);return new a();}var main;var sender;onmessage=function(b){var c=b.data;
 if(c.command){main[c.command].apply(main,c.args);}else{if(c.init){initBaseUrls(c.tlns);require(null,"ace/lib/fixoldbrowsers");sender=initSender();var a=require(null,c.module)[c.classname];
 main=new a(sender);}else{if(c.event&&sender){sender._emit(c.event,c.data);}}}};
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */
@@ -47,7 +47,7 @@ m<l.length;m++){k=this._xregexp.captureNames[m-1];if(k){l[k]=l[m];}}}if(!e&&this
 };if(!e){RegExp.prototype.test=function(k){var j=h.exec.call(this,k);if(j&&this.global&&!j[0].length&&(this.lastIndex>j.index)){this.lastIndex--;}return !!j;
 };}function g(j){return(j.global?"g":"")+(j.ignoreCase?"i":"")+(j.multiline?"m":"")+(j.extended?"x":"")+(j.sticky?"y":"");}function d(m,k,l){if(Array.prototype.indexOf){return m.indexOf(k,l);
 }for(var j=l||0;j<m.length;j++){if(m[j]===k){return j;}}return -1;}});
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */

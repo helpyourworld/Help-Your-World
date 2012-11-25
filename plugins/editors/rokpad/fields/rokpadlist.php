@@ -1,21 +1,16 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
- *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @version   $Id: rokpadlist.php 4590 2012-10-27 02:19:03Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
 defined('JPATH_PLATFORM') or die;
 
+
 /**
- * Form Field class for the Joomla Platform.
- * Supports a generic list of options.
  *
- * @package     Joomla.Platform
- * @subpackage  Form
- * @since       11.1
  */
 class JFormFieldRokPadList extends JFormField
 {

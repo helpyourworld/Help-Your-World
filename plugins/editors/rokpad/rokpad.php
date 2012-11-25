@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   $Id$
+ * @version   $Id: rokpad.php 4873 2012-11-01 01:14:49Z djamil $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -20,7 +20,7 @@ class plgEditorRokPad extends JPlugin
 	/**
 	 * @var string
 	 */
-	protected $_version = '2.0.4';
+	protected $_version = '2.1.1';
 	/**
 	 * @var string
 	 */
@@ -170,10 +170,10 @@ class plgEditorRokPad extends JPlugin
 		$html[] = '					<div class="rok-button rokpad-tip" data-original-title="Editor Settings" data-placement="below" data-rokpad-toggle="settings"><i class="rokpad-icon-settings"></i></div>';
 		$html[] = '					<div class="rok-popover" data-rokpad-popover="settings">';
 		$html[] = '						<ul class="options">';
-		$html[] = '							<li><span class="title">Theme</span><span class="input"><select data-rokpad-options="theme"></select></span></li>';
-		$html[] = '							<li><span class="title">Font Size</span><span class="input"><select data-rokpad-options="font-size"></select></span></li>';
-		$html[] = '							<li><span class="title">Code Folding</span><span class="input"><select data-rokpad-options="fold-style"><option value="manual">Manual</option><option value="markbegin">Mark Begin</option><option value="markbeginend">Mark Begin and End</option></select></span></li>';
-		$html[] = '							<li><span class="title">Soft Wrap</span><span class="input"><select data-rokpad-options="use-wrap-mode"><option value="off">Off</option><option value="40">40 Chars</option><option value="80">80 Chars</option><option value="free">Free</option></select></span></li>';
+		$html[] = '							<li><span class="title">Theme</span><span class="input"><select data-rokpad-options="theme" class="chzn-done"></select></span></li>';
+		$html[] = '							<li><span class="title">Font Size</span><span class="input"><select data-rokpad-options="font-size" class="chzn-done"></select></span></li>';
+		$html[] = '							<li><span class="title">Code Folding</span><span class="input"><select data-rokpad-options="fold-style" class="chzn-done"><option value="manual">Manual</option><option value="markbegin">Mark Begin</option><option value="markbeginend">Mark Begin and End</option></select></span></li>';
+		$html[] = '							<li><span class="title">Soft Wrap</span><span class="input"><select data-rokpad-options="use-wrap-mode" class="chzn-done"><option value="off">Off</option><option value="40">40 Chars</option><option value="80">80 Chars</option><option value="free">Free</option></select></span></li>';
 		$html[] = '							<li><span class="title-checkbox">Full Line Selection</span><span class="input"><input type="checkbox" data-rokpad-options="selection-style" /></span></li>';
 		$html[] = '							<li><span class="title-checkbox">Highlight Active Line</span><span class="input"><input type="checkbox" data-rokpad-options="highlight-active-line" /></span></li>';
 		$html[] = '							<li><span class="title-checkbox">Show Invisibles</span><span class="input"><input type="checkbox" data-rokpad-options="show-invisibles" /></span></li>';
@@ -601,37 +601,67 @@ class plgEditorRokPad extends JPlugin
 		$args['name']  = $name;
 		$args['event'] = 'onGetInsertMethod';
 
-		$html      = array();
+        $return      = '';
 		$results[] = $this->update($args);
 		foreach ($results as $result) {
 			if (is_string($result) && trim($result)) {
-				$html[] = $result;
+                $return .= $result;
 			}
 		}
 
 		if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
 			$results = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
-			// This will allow plugins to attach buttons or change the behavior on the fly using AJAX
-			$html[] = '<div id="editor-xtd-buttons">';
+            $version = new JVersion();
+            if (version_compare($version->getShortVersion(), '3.0', '>=')) {
 
-			foreach ($results as $button) {
-				// Results should be an object
-				if ($button->get('name')) {
-					$modal   = ($button->get('modal')) ? 'class="modal-button"' : null;
-					$href    = ($button->get('link')) ? 'href="' . JURI::base() . $button->get('link') . '"' : null;
-					$onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : null;
-					$title   = ($button->get('title')) ? $button->get('title') : $button->get('text');
-					$html[]  = '<div class="button2-left"><div class="' . $button->get('name') . '">';
-					$html[]  = '<a ' . $modal . ' title="' . $title . '" ' . $href . ' ' . $onclick . ' rel="' . $button->get('options') . '">';
-					$html[]  = $button->get('text') . '</a></div></div>';
-				}
-			}
+                /*
+                 * This will allow plugins to attach buttons or change the behavior on the fly using AJAX
+                 */
+                $return .= "\n<div id=\"editor-xtd-buttons\" class=\"btn-toolbar pull-left\">\n";
+                $return .= "\n<div class=\"btn-toolbar\">\n";
 
-			$html[] = '</div>';
+                foreach ($results as $button)
+                {
+                    /*
+                     * Results should be an object
+                     */
+                    if ( $button->get('name') ) {
+                        $modal		= ($button->get('modal')) ? ' class="modal-button btn"' : null;
+                        $href		= ($button->get('link')) ? ' class="btn" href="'.JURI::base().$button->get('link').'"' : null;
+                        $onclick	= ($button->get('onclick')) ? ' onclick="'.$button->get('onclick').'"' : '';
+                        $title      = ($button->get('title')) ? $button->get('title') : $button->get('text');
+                        $return .= '<a' . $modal . ' title="' . $title . '"' . $href . $onclick . ' rel="' . $button->get('options')
+                            . '"><i class="icon-' . $button->get('name'). '"></i> ' . $button->get('text') . "</a>\n";
+                    }
+                }
+
+                $return .= "</div>\n";
+                $return .= "</div>\n";
+
+            } else {
+
+                // This will allow plugins to attach buttons or change the behavior on the fly using AJAX
+                $return .= "\n".'<div id="editor-xtd-buttons">'."\n";
+
+                foreach ($results as $button) {
+                    // Results should be an object
+                    if ($button->get('name')) {
+                        $modal   = ($button->get('modal')) ? 'class="modal-button"' : null;
+                        $href    = ($button->get('link')) ? 'href="' . JURI::base() . $button->get('link') . '"' : null;
+                        $onclick = ($button->get('onclick')) ? 'onclick="' . $button->get('onclick') . '"' : null;
+                        $title   = ($button->get('title')) ? $button->get('title') : $button->get('text');
+                        $return .= "\n".'<div class="button2-left"><div class="' . $button->get('name') . '">';
+                        $return .= '<a ' . $modal . ' title="' . $title . '" ' . $href . ' ' . $onclick . ' rel="' . $button->get('options') . '">';
+                        $return .= $button->get('text') . '</a>'."\n".'</div>'."\n".'</div>'."\n";
+                    }
+                }
+
+                $return .= '</div>'."\n";
+            }
 		}
 
-		return implode("\n", $html);
+		return $return;
 	}
 
 	/**
@@ -648,7 +678,7 @@ class plgEditorRokPad extends JPlugin
 	protected function compileLess()
 	{
 		$document = JFactory::getDocument();
-		$assets   = JPATH_PLUGINS . DS . 'editors' . DS . 'rokpad' . DS . 'assets';
+		$assets   = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'editors' . DIRECTORY_SEPARATOR . 'rokpad' . DIRECTORY_SEPARATOR . 'assets';
 		@include_once($assets . '/less/mixins/lessc.inc.php');
 
 		if (defined('DEV') && DEV) {
@@ -670,12 +700,12 @@ class plgEditorRokPad extends JPlugin
 	protected function compileJS()
 	{
 		$document = JFactory::getDocument();
-		$rokpad   = JPATH_PLUGINS . DS . 'editors' . DS . 'rokpad';
+		$rokpad   = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'editors' . DIRECTORY_SEPARATOR . 'rokpad';
 
 		if (defined('DEV') && DEV) {
 			$buffer = "";
-			$assets = $rokpad . DS . 'assets' . DS . 'js' . DS;
-			$app    = $rokpad . DS . 'assets' . DS . 'application' . DS;
+			$assets = $rokpad . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+			$app    = $rokpad . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR;
 
 			$files = array(
 				$assets . 'moofx',
@@ -732,7 +762,7 @@ class plgEditorRokPad extends JPlugin
 			$data .= "'" . $param . "': '" . $value . "', ";
 		}
 		$data = substr($data, 0, strlen($data) - 2);
-		$data .= "};";
+		$data .= "}, RokPadAcePath = '".$this->_acepath."';";
 
 		return $data;
 	}

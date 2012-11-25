@@ -2,7 +2,7 @@
 /**
  * @version   $Id$
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -49,7 +49,7 @@ class RokBooster_Compressor_Sort_ExternalOnTop implements RokBooster_Compressor_
 
 		if ($file->isExternal()) {
 
-			if (!isset($this->current_external_group) || ($this->current_group->getMime() != $file->getMime() || $file->getAttributes() != $this->current_group->getAttributes())) {
+			if (!isset($this->current_external_group) || (!isset($this->current_group) || ($this->current_group->getMime() != $file->getMime() || $file->getAttributes() != $this->current_group->getAttributes()))) {
 				$group                        = new RokBooster_Compressor_FileGroup(RokBooster_Compressor_FileGroup::STATE_IGNORE, $file->getMime(), $file->getAttributes());
 				$this->external_groups[]      =& $group;
 				$this->current_external_group =& $group;

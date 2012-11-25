@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -29,7 +29,7 @@ class JElementThemeParameters extends JElement
 	{
 		jimport( 'joomla.filesystem.folder' );
 		jimport( 'joomla.filesystem.file' );
-		$doc =& JFactory::getDocument();
+		$doc = JFactory::getDocument();
 		$lang = JFactory::getLanguage();
 
 		$parameter_sets = array();
@@ -168,7 +168,7 @@ class JElementThemeParameters extends JElement
 	
 	function _getFrontSideTemplate() {
 		if (empty($this->_front_side_template)) { 
-			$db =& JFactory::getDBO();
+			$db = JFactory::getDBO();
 			// Get the current default template
 			$query = ' SELECT template '
 					.' FROM #__templates_menu '

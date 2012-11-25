@@ -6,7 +6,7 @@
 ((function(){this.Dropdowns=new Class({Implements:[Options,Events],options:{data:"rokpad"},initialize:function(a){this.selects=document.getElements(".dropdown-original select");
 this.setOptions(a);this.bounds={document:this.hideAll.bind(this)};this.attach();},attach:function(a){var b=(a?new Elements([a]).flatten():this.selects);
 this.fireEvent("beforeAttach",b);b.each(function(c){var f=c.retrieve(this.options.data+":selects:click",function(g){this.click.call(this,g,c);}.bind(this)),e=c.retrieve(this.options.data+":selects:selection",function(g){this.selection.call(this,g,c);
-}.bind(this)),d=c.getParent("."+this.options.data+"-dropdown");if(d){d.addEvent("click",f);d.getElements(".dropdown-menu > :not([data-divider])").addEvent("click",e);
+}.bind(this)),d=c.getParent("."+this.options.data+"-dropdown");if(d){if(typeof jQuery=="undefined"||!jQuery.fn.dropdown){d.addEvent("click",f);}d.getElements(".dropdown-menu > :not([data-divider])").addEvent("click",e);
 if(!c.getElement("option[selected]")){this.selection({target:d.getElement("[data-value]")},c);}}},this);if(!document.retrieve(this.options.data+":selects:document",false)){document.addEvent("click",this.bounds.document);
 document.store(this.options.data+":selects:document",true);}this.fireEvent("afterAttach",b);return this;},detach:function(a){var b=(a?new Elements([a]).flatten():this.selects);
 this.fireEvent("beforeDetach",b);b.each(function(c){var f=c.retrieve(this.options.data+":selects:click"),e=c.retrieve(this.options.data+":selects:selection"),d=c.getParent("."+this.options.data+"-dropdown");

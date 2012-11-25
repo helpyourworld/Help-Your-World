@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -159,7 +159,7 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
     }
 
     public function getFormatterPath(&$params) {
-        $app = &JFactory::getApplication();
+        $app = JFactory::getApplication();
         $theme = $this->getThemePath($params);
 
         // Get the formatters path
@@ -185,7 +185,7 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
     }
 
     public function getLayoutPath(&$params) {
-        $app = &JFactory::getApplication();
+        $app = JFactory::getApplication();
         $theme = $this->getThemePath($params);
 
         // Get the layout path
@@ -213,7 +213,7 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
     }
 
     protected function getFormattedMenu($menu, &$params) {
-        $app = &JFactory::getApplication();
+        $app = JFactory::getApplication();
         // get the base menu data structure
 
         // Run the basic formatter
@@ -257,13 +257,14 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
 
 
         //set the active tree branch
-        $joomlamenu = &JSite::getMenu();
+	    $app = JFactory::getApplication();
+        $joomlamenu = $app->getMenu();
         $active = $joomlamenu->getActive();
         if (isset($active) && isset($active->tree) && count($active->tree)) {
             reset($active->tree);
             while (list($key, $value) = each($active->tree)) {
                 $active_node =& $active->tree[$key];
-                $active_child =& $menu->findChild($active_node);
+                $active_child = $menu->findChild($active_node);
                 if ($active_child !== false) {
                     $active_child->addListItemClass('active');
                 }
@@ -272,7 +273,7 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
 
         // set the current node
         if (isset($active)) {
-            $current_child =& $menu->findChild($active->id);
+            $current_child = $menu->findChild($active->id);
             if ($current_child !== false && !$current_child->menualias) {
                 $current_child->css_id = 'current';
             }
@@ -317,7 +318,7 @@ class RokNavMenu1XRenderer implements RokMenuRenderer {
                 while (list($key, $value) = each($menu->_children)) {
                     $toplevel =& $menu->_children[$key];
                     if (isset($active) && isset($active->tree) && in_array($toplevel->id, $active->tree) !== false) {
-                        $last_active =& $menu->findChild($active->tree[count($active->tree) - 1]);
+                        $last_active = $menu->findChild($active->tree[count($active->tree) - 1]);
                         if ($last_active !==  false) {
                             $toplevel->removeIfNotInTree($active->tree, $last_active->id);
                             //$toplevel->removeLevel($last_active->level+1);

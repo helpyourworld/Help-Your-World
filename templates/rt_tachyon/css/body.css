@@ -34,7 +34,7 @@
 .component-content .rt-author, .component-content .rt-date-posted, .component-content .rt-date-modified, .component-content .rt-date-published, .component-content .rt-hits {color: #fff;text-shadow: -1px -1px 1px #888;}
 
 /* Background */
-.bodylevel-high #rt-body-background {background: #E8EAEB url(../images/body/body-bg.png);border-bottom: 1px solid #fafafa;}
+.bodylevel-high #rt-body-background {background-color: #FFF }
 .bodylevel-low #rt-body-background {background: #E8EAEB;}
 
 /* Module Variations */

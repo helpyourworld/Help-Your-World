@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   $Id: imagepicker.php 2468 2012-08-17 06:16:57Z btowles $
+ * @version   $Id: imagepicker.php 4060 2012-10-02 18:03:24Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -27,7 +27,7 @@ class GantryFormFieldImagePicker extends GantryFormField
 		/** @var $gantry Gantry */
 		global $gantry;
 
-		$com_rokgallery = JComponentHelper::getComponent('com_rokgallery');
+		$com_rokgallery = @JComponentHelper::getComponent('com_rokgallery');
 		$layout         = $link = $dropdown = "";
 		$options        = $choices = array();
 		$nomargin       = false;

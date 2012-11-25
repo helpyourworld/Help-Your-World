@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -16,8 +16,8 @@ class RokMenuNotOnActiveTreeFilter extends RecursiveFilterIterator {
         parent::__construct($recursiveIter);
     }
     public function accept() {
-
-        if (!array_key_exists($this->current()->getId(),$this->active_tree) && $this->current()->getParent() == end(array_keys($this->active_tree))){
+	    $active_keys = array_keys($this->active_tree);
+        if (!array_key_exists($this->current()->getId(),$this->active_tree) && $this->current()->getParent() == end($active_keys)){
             $this->active_tree[$this->current()->getId()] = $this->current();
         }
         if (array_key_exists($this->current()->getId(),$this->active_tree) && $this->current()->getLevel() > $this->level+1){

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -83,7 +83,7 @@ class JFormFieldThemeOptions extends JFormField
 	}
 
 	private function load_js_switcher(){
-		$doc =& JFactory::getDocument();
+		$doc = JFactory::getDocument();
 		$module_js_path = JURI::root(true).'/modules/mod_roknavmenu/lib/js';
 
 		$doc->addScript($module_js_path."/switcher.js");

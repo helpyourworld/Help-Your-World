@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   $Id: gantrymenutree.class.php 2473 2012-08-17 17:16:49Z btowles $
+ * @version   $Id: gantrymenutree.class.php 3911 2012-09-25 22:22:58Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -96,7 +96,7 @@ class GantryMenuTree extends GantryMenuTreeBase
 		}
 
 
-		$iParams = new JParameter($tmp->params);
+		$iParams = new JRegistry($tmp->params);
 
 		if ($params->get('menu_images') && $iParams->get('menu_image') && $iParams->get('menu_image') != -1) {
 			$image = JURI::base(true) . '/images/stories/' . $iParams->get('menu_image');

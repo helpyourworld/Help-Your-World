@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   $Id: StaticFile.php 1142 2012-06-22 23:13:21Z btowles $
+ * @version   $Id: StaticFile.php 4883 2012-11-01 02:31:37Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -165,32 +165,43 @@ class RokBooster_Compressor_Cache_StaticFile implements RokBooster_Compressor_IC
 	 * @throws Exception
 	 * @return bool
 	 */
-	public function write($checksum, $cont, $addheaders = true, $mimetype = 'application/x-javascript')
+	public function write($checksum, $cont, $addheaders = true, $mimetype = 'application/x-javascript', $use_datafile = false)
 	{
-		$temp_file  = $checksum . '_working.php';
-		$final_file = $checksum . '.php';
+		$final_file      = $checksum . '.php';
+		$final_data_file = $checksum . '_data.php';
 
-		$output = '';
+		$output      = '';
+		$data_output = '';
+		$files = array();
 		if ($addheaders) {
 			$output .= $this->getOutHeader($mimetype, strlen($cont));
 			$output .= "\n\n/*** " . $checksum . " ***/\n\n";
 		}
-		$output .= $cont;
 
-
-		$fh = fopen(preg_replace('#[/\\\\]+#', DIRECTORY_SEPARATOR, $this->options->cache_path.$temp_file), 'w') or die("can't open file");
-
-		if (fwrite($fh, $output)) {
-			fclose($fh);
-		} else {
-			fclose($fh);
-			throw new Exception("Can not write to path: `" . $this->options->cache_path . "`");
+		if ($use_datafile){
+			$output .= '<?php echo file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.\'' . $final_data_file . '\');?>';
+			$files[$final_data_file]=  $cont;
 		}
-
-		if (file_exists($final_file)) {
-			unlink($final_file);
+		else {
+			$output .= $cont;
 		}
-		rename($this->options->cache_path . $temp_file, $this->options->cache_path . $final_file);
+		$files[$final_file]=  $output;
+
+		foreach ($files as $file_name => $file_contents) {
+			$fh = fopen(preg_replace('#[/\\\\]+#', DIRECTORY_SEPARATOR, $this->options->cache_path . $file_name.'_working'), 'w') or die("can't open file");
+
+			if (fwrite($fh, $file_contents)) {
+				fclose($fh);
+			} else {
+				fclose($fh);
+				throw new Exception("Can not write to path: `" . $this->options->cache_path . "`");
+			}
+
+			if (file_exists($final_file)) {
+				unlink($final_file);
+			}
+			rename($this->options->cache_path . $file_name.'_working', $this->options->cache_path . $file_name);
+		}
 		return true;
 	}
 
@@ -199,7 +210,7 @@ class RokBooster_Compressor_Cache_StaticFile implements RokBooster_Compressor_IC
 	 */
 	public function writeScriptFile(RokBooster_Compressor_FileGroup $filegroup)
 	{
-		$this->write($filegroup->getChecksum(), $filegroup->getResult(), true, 'application/x-javascript');
+		$this->write($filegroup->getChecksum(), $filegroup->getResult(), true, 'application/x-javascript', true);
 	}
 
 	/**
@@ -215,7 +226,7 @@ class RokBooster_Compressor_Cache_StaticFile implements RokBooster_Compressor_IC
 	 */
 	public function writeStyleFile(RokBooster_Compressor_FileGroup $filegroup)
 	{
-		$this->write($filegroup->getChecksum(), $filegroup->getResult(), true, 'text/css');
+		$this->write($filegroup->getChecksum(), $filegroup->getResult(), true, 'text/css', true);
 	}
 
 	/**

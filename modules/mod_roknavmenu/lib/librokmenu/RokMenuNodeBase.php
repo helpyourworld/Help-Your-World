@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -140,7 +140,7 @@ if (!class_exists('RokMenuNodeBase')) {
          * @return bool
          */
         public function hasChildren() {
-            return (count($this->children)>0)?true:false;
+            return !empty($this->children);
         }
 
         /**

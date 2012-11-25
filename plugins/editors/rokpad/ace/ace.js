@@ -40,7 +40,7 @@ var i=d("./multi_select").MultiSelect;d("./worker/worker_client");d("./keyboard/
 f.edit=function(n){if(typeof(n)=="string"){var k=n;if(!(n=document.getElementById(n))){console.log("can't match div #"+k);}}if(n.env&&n.env.editor instanceof h){return n.env.editor;
 }var o=new a(g.getInnerText(n));o.setUndoManager(new b());n.innerHTML="";var m=new h(new e(n,d("./theme/textmate")));new i(m);m.setSession(o);var l={};
 l.document=o;l.editor=m;m.resize();j.addListener(window,"resize",function(){m.resize();});n.env=l;m.env=l;return m;};});
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */
@@ -52,7 +52,7 @@ m<l.length;m++){k=this._xregexp.captureNames[m-1];if(k){l[k]=l[m];}}}if(!e&&this
 };if(!e){RegExp.prototype.test=function(j){var i=h.exec.call(this,j);if(i&&this.global&&!i[0].length&&(this.lastIndex>i.index)){this.lastIndex--;}return !!i;
 };}function g(i){return(i.global?"g":"")+(i.ignoreCase?"i":"")+(i.multiline?"m":"")+(i.extended?"x":"")+(i.sticky?"y":"");}function d(m,k,l){if(Array.prototype.indexOf){return m.indexOf(k,l);
 }for(var j=l||0;j<m.length;j++){if(m[j]===k){return j;}}return -1;}});
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */

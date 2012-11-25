@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   $Id: YUI.php 380 2012-04-28 04:25:52Z btowles $
+ * @version   $Id: YUI.php 4870 2012-11-01 00:18:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -35,19 +35,19 @@ class RokBooster_Compressor_Processor_YUI
     /**
      *
      */
-    const NL = '___YUICSSMIN_PRESERVED_NL___';
+    const NL = '___NL___';
     /**
      *
      */
-    const TOKEN = '___YUICSSMIN_PRESERVED_TOKEN_';
+    const TOKEN = '___T_';
     /**
      *
      */
-    const COMMENT = '___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_';
+    const COMMENT = '___COM_';
     /**
      *
      */
-    const CLASSCOLON = '___YUICSSMIN_PSEUDOCLASSCOLON___';
+    const CLASSCOLON = '___CL___';
 
     /**
      * @var
@@ -90,6 +90,7 @@ class RokBooster_Compressor_Processor_YUI
         $this->pcre_backtrack_limit = 60;
         $this->pcre_recursion_limit = 60;
         $this->raise_php_limits = true;
+	    ini_set("pcre.recursion_limit", "2097");
     }
 
     /**
@@ -318,7 +319,7 @@ class RokBooster_Compressor_Processor_YUI
         $css = preg_replace('/\s+/', ' ', $css);
 
         // Shorten & preserve calculations calc(...) since spaces are important
-        $css = preg_replace_callback('/calc(\((?:[^\(\)]+|(?1))*\))/i', array($this, 'replace_calc'), $css);
+        //$css = preg_replace_callback('/calc(\((?:[^\(\)]+|(?1))*\))/i', array($this, 'replace_calc'), $css);
 
         // Replace positive sign from numbers preceded by : or a white-space before the leading space is removed
         // +1.2em to 1.2em, +.8px to .8px, +2% to 2%
@@ -341,11 +342,11 @@ class RokBooster_Compressor_Processor_YUI
         // Remove the spaces before the things that should not have spaces before them.
         // But, be careful not to turn "p :link {...}" into "p:link{...}"
         // Swap out any pseudo-class colons with the token, and then swap back.
-		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-	        $css = preg_replace_callback('/(?:^|\})(?:(?:[^\{\:])+\:)+(?:[^\{]*\{)/', array($this, 'replace_colon'), $css);
-	        $css = preg_replace('/\s+([\!\{\}\;\:\>\+\(\)\]\~\=,])/', '$1', $css);
-	        $css = preg_replace('/' . self::CLASSCOLON . '/', ':', $css);
-	    }
+//		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+//	        $css = preg_replace_callback('/(?:^|\})(?:(?:[^\{\:])+\:)+(?:[^\{]*\{)/', array($this, 'replace_colon'), $css);
+//	        $css = preg_replace('/\s+([\!\{\}\;\:\>\+\(\)\]\~\=,])/', '$1', $css);
+//	        $css = preg_replace('/' . self::CLASSCOLON . '/', ':', $css);
+//	    }
 
         // retain space for special IE6 cases
         $css = preg_replace('/\:first\-(line|letter)(\{|,)/i', ':first-$1 $2', $css);
@@ -385,11 +386,11 @@ class RokBooster_Compressor_Processor_YUI
         // Shorten colors from rgb(51,102,153) to #336699, rgb(100%,0%,0%) to #ff0000 (sRGB color space)
         // Shorten colors from hsl(0, 100%, 50%) to #ff0000 (sRGB color space)
         // This makes it more likely that it'll get further compressed in the next step.
-        $css = preg_replace_callback('/rgb\s*\(\s*([0-9,\s\-\.\%]+)\s*\)(.{1})/i', array($this, 'rgb_to_hex'), $css);
-        $css = preg_replace_callback('/hsl\s*\(\s*([0-9,\s\-\.\%]+)\s*\)(.{1})/i', array($this, 'hsl_to_hex'), $css);
+        //$css = preg_replace_callback('/rgb\s*\(\s*([0-9,\s\-\.\%]+)\s*\)(.{1})/i', array($this, 'rgb_to_hex'), $css);
+        //$css = preg_replace_callback('/hsl\s*\(\s*([0-9,\s\-\.\%]+)\s*\)(.{1})/i', array($this, 'hsl_to_hex'), $css);
 
         // Shorten colors from #AABBCC to #ABC or short color name.
-        $css = $this->compress_hex_colors($css);
+        //$css = $this->compress_hex_colors($css);
 
         // border: none to border:0, outline: none to outline:0
         $css = preg_replace('/(border\-?(?:top|right|bottom|left|)|outline)\:none(;|\})/ieS', "strtolower('$1:0$2')", $css);
@@ -605,7 +606,9 @@ class RokBooster_Compressor_Processor_YUI
      */
     private function replace_colon($matches)
     {
-        return preg_replace('/\:/', self::CLASSCOLON, $matches[0]);
+	    //$out=preg_replace('/\:/', self::CLASSCOLON, $matches[0]);
+	    $out = str_replace(':', self::CLASSCOLON, $matches[0]);
+        return $out;
     }
 
     /**

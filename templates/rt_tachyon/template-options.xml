@@ -114,7 +114,8 @@
         </fields>
 	</fieldset>
 	<fieldset name="features" label="FEATURES">
-		<field name="viewswitcher-priority" type="hidden" default="1"/>
+	    <field name="dyngrid" default="60" type="text" class="text-short" label="mywidth"/> 
+	    <field name="viewswitcher-priority" type="hidden" default="1"/>
 	    <field name="logo-priority" type="hidden" default="2"/>
 	    <field name="copyright-priority" type="hidden" default="3"/>
 	    <field name="styledeclaration-priority" type="hidden" default="4"/>

@@ -1,0 +1,6 @@
+@import url("../../../../../components/com_community/templates/default/css/style.css");
+
+/*** Test ***/
+h1,h2,h3 {
+  font-size: 400% !important;
+}

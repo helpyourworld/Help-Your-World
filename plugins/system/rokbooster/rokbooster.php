@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   $Id: rokbooster.php 2071 2012-07-31 22:33:00Z btowles $
+ * @version   $Id: rokbooster.php 4881 2012-11-01 01:42:26Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
@@ -46,7 +46,7 @@ class plgSystemRokBooster extends JPlugin
 	 * @param $subject
 	 * @param $config
 	 */
-	function __construct(&$subject, $config)
+	public function __construct(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
 		$app = JFactory::getApplication();
@@ -54,6 +54,7 @@ class plgSystemRokBooster extends JPlugin
 			$lang = JFactory::getLanguage();
 			$lang->load('plg_system_rokbooster', JPATH_ADMINISTRATOR);
 		}
+		JLog::addLogger(array('text_file' => 'rokbooster.php'), $this->params->get('debugloglevel', 63), array('rokbooster'));
 	}
 
 
@@ -64,7 +65,7 @@ class plgSystemRokBooster extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		// Catch any output  from the frontend for the body
-		if (!$app->isAdmin() && !$this->isDisabled() && $this->params->get('use_background_processing', 1) && (int)ini_get('output_buffering') == 0) {
+		if (!$app->isAdmin() && !JDEBUG && !$this->isDisabled() && $this->params->get('use_background_processing', 1) && (int)ini_get('output_buffering') == 0) {
 			$this->background = true;
 			//set default vales
 			ob_start();
@@ -84,25 +85,27 @@ class plgSystemRokBooster extends JPlugin
 	 */
 	public function onBeforeCompileHead()
 	{
+		if (!JDEBUG) {
 
-		$app = JFactory::getApplication();
-		$doc = JFactory::getDocument();
-
-
-		if ($app->isAdmin() || $doc->getType() != 'html') return;
-		$this->setup();
+			$app = JFactory::getApplication();
+			$doc = JFactory::getDocument();
 
 
-		//no minify enabled
-		if ($this->isDisabled() || (!$this->options->minify_html && !$this->options->minify_css && !$this->options->minify_js && !$this->options->inline_css && !$this->options->inline_js)
-		) return;
+			if ($app->isAdmin() || $doc->getType() != 'html') return;
+			$this->setup();
 
-		if ($this->options->scan_method == 'joomla') {
-			$this->strategy->identify();
-			if (!$this->background) {
-				$this->strategy->process();
+
+			//no minify enabled
+			if ($this->isDisabled() || (!$this->options->minify_html && !$this->options->minify_css && !$this->options->minify_js && !$this->options->inline_css && !$this->options->inline_js)
+			) return;
+
+			if ($this->options->scan_method == 'joomla') {
+				$this->strategy->identify();
+				if (!$this->background) {
+					$this->strategy->process();
+				}
+				$this->strategy->populate();
 			}
-			$this->strategy->populate();
 		}
 	}
 
@@ -110,23 +113,28 @@ class plgSystemRokBooster extends JPlugin
 	/**
 	 * @return mixed
 	 */
-	function onAfterRender()
+	public function onAfterRender()
 	{
-		$app = JFactory::getApplication();
-		$doc = JFactory::getDocument();
+		if (!JDEBUG) {
+			$app = JFactory::getApplication();
+			$doc = JFactory::getDocument();
 
-		if ($app->isAdmin() || $doc->getType() != 'html') return;
+			if ($app->isAdmin() || $doc->getType() != 'html') return;
 
-		//no minify enabled
-		if ($this->isDisabled() || (!$this->options->minify_html && !$this->options->minify_css && !$this->options->minify_js && !$this->options->inline_css && !$this->options->inline_js)
-		) return;
+			//no minify enabled
+			if ($this->isDisabled() || (!$this->options->minify_html && !$this->options->minify_css && !$this->options->minify_js && !$this->options->inline_css && !$this->options->inline_js)
+			) return;
 
-		if ($this->options->scan_method != 'joomla') {
-			$this->strategy->identify();
-			if (!$this->background) {
-				$this->strategy->process();
+			if ($this->options->scan_method != 'joomla') {
+				$this->strategy->identify();
+				if (!$this->background) {
+					$this->strategy->process();
+				}
+				$this->strategy->populate();
 			}
-			$this->strategy->populate();
+			else{
+				$this->strategy->processForImages();
+			}
 		}
 	}
 
@@ -147,7 +155,7 @@ class plgSystemRokBooster extends JPlugin
 		}
 		$this->options->cache_url = JURI::base(true) . '/cache/rokbooster/';
 		$this->options->root_path = rtrim(JPATH_SITE, "/");
-		$this->options->root_url  = rtrim(JURI::Root(), "/");
+		$this->options->root_url  = rtrim(JURI::root(), "/");
 
 		//we could do $this->options = $this->params->toObject();
 		//but that won't set defaults if plugin has never been saved
@@ -171,7 +179,9 @@ class plgSystemRokBooster extends JPlugin
 		$this->options->style_sort                = $this->params->get('style_sort', 'RokBooster_Compressor_Sort_ExternalOnTop');
 		$this->options->disable_for_ie            = $this->params->get('disable_for_ie', 0);
 		$this->options->scan_method               = $this->params->get('scan_method', 'header');
-
+		$this->options->convert_page_images       = $this->params->get('convert_page_images', 1);
+		$this->options->convert_css_images        = $this->params->get('convert_css_images', 1);
+		$this->options->max_data_uri_image_size   = $this->params->get('max_data_uri_image_size', 21612);
 
 		switch ($this->options->scan_method) {
 			case 'joomla':
@@ -251,7 +261,7 @@ class plgSystemRokBooster extends JPlugin
 	/**
 	 *
 	 */
-	function __destruct()
+	public function __destruct()
 	{
 		// Actual Generation happens here
 		if ($this->background) {

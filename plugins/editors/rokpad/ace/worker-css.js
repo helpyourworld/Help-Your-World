@@ -35,7 +35,7 @@ var b=require(null,"ace/lib/oop");var a=function(){};(function(){b.implement(thi
 };this.emit=function(d,e){postMessage({type:"event",name:d,data:e});};}).call(a.prototype);return new a();}var main;var sender;onmessage=function(b){var c=b.data;
 if(c.command){main[c.command].apply(main,c.args);}else{if(c.init){initBaseUrls(c.tlns);require(null,"ace/lib/fixoldbrowsers");sender=initSender();var a=require(null,c.module)[c.classname];
 main=new a(sender);}else{if(c.event&&sender){sender._emit(c.event,c.data);}}}};
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */
@@ -47,7 +47,7 @@ m<l.length;m++){k=this._xregexp.captureNames[m-1];if(k){l[k]=l[m];}}}if(!e&&this
 };if(!e){RegExp.prototype.test=function(j){var i=h.exec.call(this,j);if(i&&this.global&&!i[0].length&&(this.lastIndex>i.index)){this.lastIndex--;}return !!i;
 };}function g(i){return(i.global?"g":"")+(i.ignoreCase?"i":"")+(i.multiline?"m":"")+(i.extended?"x":"")+(i.sticky?"y":"");}function d(m,k,l){if(Array.prototype.indexOf){return m.indexOf(k,l);
 }for(var j=l||0;j<m.length;j++){if(m[j]===k){return j;}}return -1;}});
-/*!
+/*
     Copyright (c) 2009, 280 North Inc. http://280north.com/
     MIT License. http://github.com/280north/narwhal/blob/master/README.md
 */
@@ -190,7 +190,7 @@ for(var f in g){h[f]=g[f];}return h;};a.arrayRemove=function(h,g){for(var f=0;f<
 };a.getMatchOffsets=function(g,f){var h=[];g.replace(f,function(i){h.push({offset:arguments[arguments.length-2],length:i.length});});return h;};a.deferredCall=function(g){var i=null;
 var h=function(){i=null;g();};var f=function(j){f.cancel();i=setTimeout(h,j||0);return f;};f.schedule=f;f.call=function(){this.cancel();g();return f;};
 f.cancel=function(){clearTimeout(i);i=null;return f;};return f;};});define("ace/mode/css/csslint",["require","exports","module"],function(require,exports,module){
-/*!
+/*
 CSSLint
 Copyright (c) 2011 Nicole Sullivan and Nicholas C. Zakas. All rights reserved.
 
@@ -213,7 +213,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-/*!
+/*
 Parser-Lib
 Copyright (c) 2009-2011 Nicholas C. Zakas. All rights reserved.
 

@@ -20,6 +20,8 @@ defined('JPATH_PLATFORM') or die;
  */
 class JFormFieldTextPlus extends JFormField
 {
+
+	public static $header_loaded = false;
 	/**
 	 * The form field type.
 	 *
@@ -28,6 +30,8 @@ class JFormFieldTextPlus extends JFormField
 	 * @since  11.1
 	 */
 	protected $type = 'TextPlus';
+
+
 
 	/**
 	 * Method to get the field input markup.
@@ -38,6 +42,13 @@ class JFormFieldTextPlus extends JFormField
 	 */
 	protected function getInput()
 	{
+		if (!self::$header_loaded)
+		{
+			$doc = JFactory::getDocument();
+			$doc->addStyleSheet(JURI::root(true).'/plugins/system/rokbooster/fields/assets/textplus/css/textplus.css');
+			self::$header_loaded = true;
+		}
+
 		// Initialize some field attributes.
 		$size      = $this->element['size'] ? ' size="' . (int)$this->element['size'] . '"' : '';
 		$maxLength = $this->element['maxlength'] ? ' maxlength="' . (int)$this->element['maxlength'] . '"' : '';

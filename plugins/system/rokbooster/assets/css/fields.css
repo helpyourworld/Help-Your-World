@@ -1,6 +1,9 @@
-.dropdown-original {display: none;}
-.booster-break {border-bottom:1px solid #eee;font-size:16px;color:#333;margin-top:15px;padding:2px 0;}
-.booster-break.top {margin-top:5px;}
+/*!
+ * @version   $Id: rokbooster.php 2699 2012-08-24 00:42:31Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
+ */
 .img-padding {margin: 0 10px 10px 0;float:left;}
 .booster-description p {font-weight: normal;}
 .booster-description .note {background-color:#FFFFDC;display:block;padding:6px;border-radius:6px;border:1px solid #D6D6B1;font-style:italic;}
@@ -9,24 +12,7 @@
 .btn i {font-style:normal;}
 
 .boost-spinner > i {background: url(../images/spinner.gif) 100% 0 no-repeat; display:inline-block;padding-right:20px;}
-.clearcache .count {margin-left:4px;background:#000;color:#fff;font-weight:bold;display:inline-block;border-radius:8px;font-size:10px;width:16px;height:16px;text-align:center;line-height:17px;}
-.clearcache.boost-spinner .count {display:none;}
 
-.booster-dropdown{display:inline-block;margin-bottom:9px;margin-right:5px;position:relative}.dropdown-toggle{*margin-bottom:-3px}.booster-dropdown .btn:last-child,.booster-dropdown .dropdown-toggle{-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px}
-
-.booster-dropdown:hover .caret,.open.booster-dropdown .caret{opacity:1;filter:alpha(opacity=100)}.dropdown-menu{position:absolute;top:100%;left:-1px;z-index:1000;float:left;display:none;min-width:160px;_width:160px;padding:4px 0!important;margin:1px 0 0!important;list-style:none;background-color:#fff;border-color:#ccc;border-color:rgba(0,0,0,0.2);border-style:solid;border-width:1px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2);-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box;*border-right-width:2px;*border-bottom-width:2px}
-
-.booster-dropdown.open{*z-index:1000}.booster-dropdown.open .dropdown-toggle{background-image:none;-webkit-box-shadow:inset 0 2px 4px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.05);-moz-box-shadow:inset 0 2px 4px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.05);box-shadow:inset 0 2px 4px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.05);background-color:#f2f2f2;background-color:#d9d9d9 \9;color:rgba(0,0,0,0.5);outline:0}
-.booster-dropdown.open .dropdown-menu{display:block}.load-more{-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;margin:10px auto;display:block;padding:5px;width:155px}
-
-.booster-dropdown, .input-prepend .booster-dropdown {margin-bottom:0}
-.input-prepend .booster-dropdown .dropdown-toggle, .input-prepend .booster-dropdown .dropdown-toggle {-webkit-border-radius:0 4px 4px 0;-moz-border-radius:0 4px 4px 0;border-radius:0 4px 4px 0;line-height:19px;height:16px}
-.input-prepend .booster-dropdown .dropdown-toggle .caret,.input-prepend .booster-dropdown .dropdown-toggle .caret {margin-top:5px}
-.input-prepend .booster-dropdown a {text-shadow:none}
-
-.dropdown-menu.bottom-up{top:auto;bottom:100%;margin-bottom:2px}.dropdown-menu .divider{height:1px;margin:5px 0;overflow:hidden;background-color:#e5e5e5;border-bottom:1px solid #fff;*width:100%;*margin:-5px 0 5px}
-.dropdown-menu a{display:block;padding:3px 15px;clear:both;font-weight:normal;line-height:18px;color:#555!important;white-space:nowrap;font-size:12px}
-.dropdown-menu li{width:100%!important;float:none!important}.dropdown-menu li>a:hover,.dropdown-menu .active>a,.dropdown-menu .active>a:hover{color:#fff!important;text-decoration:none;background-color:#08c}
 
 .panelform {padding-bottom:60px !important;margin-bottom:0 !important;}
 .panelform ul.adminformlist li {clear:left;padding:4px 0;}
@@ -34,16 +20,8 @@
 .panelform li input, .panelform li select, .panelform li textarea {margin:0;float:none;}
 .panelform #jform_params_ignored_files {width:200px;height:70px;overflow:auto;white-space:nowrap;}
 .panelform #jform_params_cache_time {width:50px;}
+.panelform #jform_params_max_data_uri_image_size {width:100px;}
 .panelform textarea {font-size:100%;font-family:"lucida grande","helvetica","arial","sans-serif";}
-.dropdown-menu li {padding: 0 !important;}
-
-.input-append input{margin-right:0;vertical-align:top;}.input-prepend input{margin-left:0;vertical-align:top;}.uneditable-textarea{width:auto;height:auto}label input,label textarea,label select{display:block}
-.input-prepend,.input-append{margin-bottom:5px;}.input-prepend input,.input-prepend .uneditable-input,.input-append input,.input-append .uneditable-input{-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0}
-.input-prepend .uneditable-input,.input-append .uneditable-input{border-left-color:#ccc}.input-prepend .add-on,.input-append .add-on{float:left;display:inline-block;width:auto;min-width:16px;height:18px;margin-right:-1px;padding:4px 4px 4px 5px;font-weight:normal;line-height:18px;color:#999;text-align:center;text-shadow:0 1px 0 #fff;background-color:#f5f5f5;border:1px solid #ccc;-webkit-border-radius:3px 0 0 3px;-moz-border-radius:3px 0 0 3px;border-radius:3px 0 0 3px}
-.input-prepend .active,.input-append .active{background-color:#a9dba9;border-color:#46a546}.input-prepend .add-on{*margin-top:1px}.input-append input,.input-append .uneditable-input{-webkit-border-radius:3px 0 0 3px;-moz-border-radius:3px 0 0 3px;border-radius:3px 0 0 3px}
-.input-append .uneditable-input{border-right-color:#ccc;float:left}.input-append .add-on{margin-right:0;margin-left:-5px;float:none;-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0}
-.input-append input:first-child{*margin-left:-160px}.input-append input:first-child+.add-on{*margin-left:-21px}.search-query{padding-left:14px;padding-right:14px;margin-bottom:0;-webkit-border-radius:14px;-moz-border-radius:14px;border-radius:14px}
-
 
 .panelform input,.panelform textarea,.panelform select,.panelform .uneditable-input{display:inline-block;width:210px;height:18px;padding:4px;margin-bottom:9px;margin-right:5px;font-size:13px;line-height:18px;color:#555;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;outline:0!important}
 .panelform input,.panelform textarea{-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,0.075);-moz-box-shadow:inset 0 1px 1px rgba(0,0,0,0.075);box-shadow:inset 0 1px 1px rgba(0,0,0,0.075);-webkit-transition:border linear .2s,box-shadow linear .2s;-moz-transition:border linear .2s,box-shadow linear .2s;-ms-transition:border linear .2s,box-shadow linear .2s;-o-transition:border linear .2s,box-shadow linear .2s;transition:border linear .2s,box-shadow linear .2s}
@@ -70,3 +48,4 @@
 .btn-info:hover,.btn-info:active,.btn-info.active,.btn-info.disabled{background-color:#2f96b4}.btn-info[disabled]{background-color:#2f96b4}.btn-info:active,.btn-info.active{background-color:#24748c \9}
 button.btn,input[type="submit"].btn{*padding-top:2px;*padding-bottom:2px}button.btn::-moz-focus-inner,input[type="submit"].btn::-moz-focus-inner{padding:0;border:0}
 button.btn.large,input[type="submit"].btn.large{*padding-top:7px;*padding-bottom:7px}button.btn.small,input[type="submit"].btn.small{*padding-top:3px;*padding-bottom:3px}
+

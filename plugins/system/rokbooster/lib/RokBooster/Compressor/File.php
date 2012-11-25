@@ -2,7 +2,7 @@
 /**
  * @version   $Id$
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -80,10 +80,13 @@ class RokBooster_Compressor_File
 	{
 		$this->file     = $file;
 		$this->external = self::isLinkExternal($this->file, $root_url);
-		$this->path     = (!$this->external) ? self::getFileLink($file, $root_url, $root_path) : $file;
-		$this->url      = (!$this->external) ? self::getFileLink($file, $root_url, $root_path, false) : $file;
-		$this->type     = self::getExt($file);
-
+		$uri  = parse_url($file);
+		$this->path     = (!$this->external) ? self::getFileLink($uri['path'], $root_url, $root_path) : $file;
+		$this->url      = (!$this->external) ? self::getFileLink($uri['path'], $root_url, $root_path, false) : $file;
+		if (isset($uri['query'])){
+			$this->url .= '?'.$uri['query'];
+		}
+		$this->type     = self::getExt($uri['path']);
 		if (!$this->external && $this->isFullUrl($this->file))
 		{
 			$this->file = self::getRelativePath($this->file);
@@ -111,9 +114,8 @@ class RokBooster_Compressor_File
 
 	protected static function isFullUrl($url)
 	{
-		$uri  = parse_url($url);
-		if (isset($uri['scheme']) && (strtolower($uri['scheme']) == 'http' || strtolower($uri['scheme'] == 'https')))
-		{
+		$uri = parse_url($url);
+		if (isset($uri['scheme']) && (strtolower($uri['scheme']) == 'http' || strtolower($uri['scheme'] == 'https'))) {
 			return true;
 		}
 		return false;
@@ -125,6 +127,7 @@ class RokBooster_Compressor_File
 		$path = (isset($uri['path'])) ? $uri['path'] : '';
 		return $path;
 	}
+
 	/**
 	 * @param string $link   original relative url
 	 * @param bool   $isPath specify path or url, path is default
@@ -134,7 +137,7 @@ class RokBooster_Compressor_File
 	 *
 	 * @return string $filepath return requested link as a full url or full path
 	 */
-	protected static function getFileLink($link, $root_url, $root_path, $isPath = true)
+	public static function getFileLink($link, $root_url, $root_path, $isPath = true)
 	{
 		$uri  = parse_url($root_url);
 		$path = (isset($uri['path'])) ? $uri['path'] : '';
@@ -151,7 +154,7 @@ class RokBooster_Compressor_File
 		$url_uri = parse_url($url);
 
 		$ext = strtolower(pathinfo(basename($url_uri['path']), PATHINFO_EXTENSION));
-		if ($ext != 'js' && $ext != 'css'){
+		if (!in_array($ext, array('js', 'css', 'gif', 'jpg', 'jpeg', 'png'))) {
 			return true;
 		}
 
@@ -373,4 +376,79 @@ class RokBooster_Compressor_File
 	{
 		return $this->mime;
 	}
+
+	public static function mime_content_type($filename)
+	{
+
+		$mime_types = array(
+
+			'txt'  => 'text/plain',
+			'htm'  => 'text/html',
+			'html' => 'text/html',
+			'php'  => 'text/html',
+			'css'  => 'text/css',
+			'js'   => 'application/javascript',
+			'json' => 'application/json',
+			'xml'  => 'application/xml',
+			'swf'  => 'application/x-shockwave-flash',
+			'flv'  => 'video/x-flv',
+
+			// images
+			'png'  => 'image/png',
+			'jpe'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'jpg'  => 'image/jpeg',
+			'gif'  => 'image/gif',
+			'bmp'  => 'image/bmp',
+			'ico'  => 'image/vnd.microsoft.icon',
+			'tiff' => 'image/tiff',
+			'tif'  => 'image/tiff',
+			'svg'  => 'image/svg+xml',
+			'svgz' => 'image/svg+xml',
+
+			// archives
+			'zip'  => 'application/zip',
+			'rar'  => 'application/x-rar-compressed',
+			'exe'  => 'application/x-msdownload',
+			'msi'  => 'application/x-msdownload',
+			'cab'  => 'application/vnd.ms-cab-compressed',
+
+			// audio/video
+			'mp3'  => 'audio/mpeg',
+			'qt'   => 'video/quicktime',
+			'mov'  => 'video/quicktime',
+
+			// adobe
+			'pdf'  => 'application/pdf',
+			'psd'  => 'image/vnd.adobe.photoshop',
+			'ai'   => 'application/postscript',
+			'eps'  => 'application/postscript',
+			'ps'   => 'application/postscript',
+
+			// ms office
+			'doc'  => 'application/msword',
+			'rtf'  => 'application/rtf',
+			'xls'  => 'application/vnd.ms-excel',
+			'ppt'  => 'application/vnd.ms-powerpoint',
+
+			// open office
+			'odt'  => 'application/vnd.oasis.opendocument.text',
+			'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+		);
+
+		$filename_parts = explode('.', $filename);
+		$ext = strtolower(array_pop($filename_parts));
+
+		if (array_key_exists($ext, $mime_types)) {
+			return $mime_types[$ext];
+		} elseif (function_exists('finfo_open')) {
+			$finfo    = finfo_open(FILEINFO_MIME);
+			$mimetype = finfo_file($finfo, $filename);
+			finfo_close($finfo);
+			return $mimetype;
+		} else {
+			return 'application/octet-stream';
+		}
+	}
+
 }

@@ -24,18 +24,18 @@ class JFormFieldInit extends JFormField
 	 * @var string
 	 */
 	protected $type = 'Init';
+	public static $assets_loaded = false;
 
 	/**
 	 *
 	 */
 	public function __construct()
 	{
-		$doc = JFactory::getDocument();
-		$doc->addStyleSheet(JURI::root() . 'plugins/system/rokbooster/assets/css/fields.css');
-		$doc->addScript(JURI::root() . 'plugins/system/rokbooster/assets/js/RokBooster.js');
-		$doc->addScript(JURI::root() . 'plugins/system/rokbooster/assets/js/Dropdowns.js');
-		$doc->addScriptDeclaration("window.addEvent('domready', function() { new Dropdowns(); });");
-
+		if (!self::$assets_loaded){
+			$doc = JFactory::getDocument();
+			$doc->addStyleSheet(JURI::root() . 'plugins/system/rokbooster/assets/css/fields.css');
+			self::$assets_loaded = true;
+		}
 	}
 
 	/**

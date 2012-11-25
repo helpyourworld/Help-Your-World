@@ -1,8 +1,8 @@
 <?php
 /**
- * @version        1.0 February 24, 2011
+ * @version        1.1 August 13, 2012
  * @author        RocketTheme http://www.rockettheme.com
- * @copyright     Copyright (C) 2007 - 2011 RocketTheme, LLC
+ * @copyright     Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  *
  * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
@@ -29,7 +29,7 @@ class plgSystemRokExtender extends JPlugin
         $registered_files = explode(',', $this->params->get('registered', ''));
         foreach ($registered_files as $registered_file)
         {
-            $dispatcher =& JDispatcher::getInstance();
+            $dispatcher = JDispatcher::getInstance();
             $className = basename(trim($registered_file), '.php');
             $fullpath = JPATH_ROOT . $registered_file;
             if (file_exists($fullpath) && is_file($fullpath))

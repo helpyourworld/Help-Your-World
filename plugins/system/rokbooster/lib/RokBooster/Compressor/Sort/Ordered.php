@@ -2,7 +2,7 @@
 /**
  * @version   $Id$
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -43,7 +43,7 @@ class RokBooster_Compressor_Sort_Ordered implements RokBooster_Compressor_ISort
 			$current_type = RokBooster_Compressor_FileGroup::STATE_INCLUDE;
 		}
 
-		if (!isset($this->current_group) || ($current_type != $this->current_group->getStatus() || $this->current_group->getMime() != $file->getMime() || $file->getAttributes() != $this->current_group->getAttributes())) {
+		if (!isset($this->current_group) || ($current_type != $this->current_group->getStatus() ||(!is_null($this->current_group) && $this->current_group->getMime() != $file->getMime()) || $file->getAttributes() != $this->current_group->getAttributes())) {
 			$this->last_type     = $current_type;
 			$group               = new RokBooster_Compressor_FileGroup($current_type, $file->getMime(), $file->getAttributes());
 			$this->groups[]      =& $group;

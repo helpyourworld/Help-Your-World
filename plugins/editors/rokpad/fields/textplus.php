@@ -1,22 +1,15 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
- *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @version   $Id: textplus.php 4590 2012-10-27 02:19:03Z btowles $
+ * @author    RocketTheme http://www.rockettheme.com
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Form Field class for the Joomla Platform.
- * Supports a one line text field.
  *
- * @package     Joomla.Platform
- * @subpackage  Form
- * @link        http://www.w3.org/TR/html-markup/input.text.html#input.text
- * @since       11.1
  */
 class JFormFieldTextPlus extends JFormField
 {

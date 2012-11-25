@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   $Id: PhpQueryScanStrategy.php 684 2012-05-02 21:18:14Z btowles $
+ * @version   $Id: PhpQueryScanStrategy.php 4884 2012-11-01 03:20:30Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
@@ -61,6 +61,10 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 		if ($this->options->inline_css) {
 			$this->identifyInlineStyles();
 		}
+		if ($this->options->convert_page_images) {
+			$this->identifyImageSources();
+		}
+
 	}
 
 	/**
@@ -102,6 +106,38 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 	}
 
 
+	protected function identifyImageSources()
+	{
+		$image_links = pq('img[src]', $this->document);
+		foreach ($image_links as $image) {
+			$attribs = pq($image, $this->document)->attr('*');
+			$src     = $attribs['src'];
+			unset($attribs['src']);
+
+			$file = new RokBooster_Compressor_File($src, $this->options->root_url, $this->options->root_path);
+			$file->setAttributes($attribs);
+
+			$ext = strtolower(pathinfo($file->getPath(), PATHINFO_EXTENSION));
+			$file->setMime(RokBooster_Compressor_File::mime_content_type($file->getPath()));
+			if (!$file->isExternal() && is_file($file->getPath())) {
+				list(, , , , , , , $size, , $mtime, $ctime, ,) = @stat($file->getPath());
+				if (!in_array($file->file, $this->options->ignored_files) && $size <= $this->options->max_data_uri_image_size) {
+					$this->images[$file->getFile()] = $file;
+					$group                          = new RokBooster_Compressor_FileGroup(RokBooster_Compressor_FileGroup::STATE_INCLUDE, $file->getMime());
+					$group->addItem($file);
+					$this->imageFileGroups[$file->getFile()] = $group;
+				}
+			}
+		}
+
+		foreach ($this->imageFileGroups as $image_file_group) {
+			if ($image_file_group->getStatus() != RokBooster_Compressor_IGroup::STATE_IGNORE && $this->isCacheExpired($image_file_group->getChecksum()) && !$this->isBeingRendered($image_file_group->getChecksum())) {
+				$this->encode_image_file_groups[] = $image_file_group;
+				$this->setCurrentlyRendering($image_file_group->getChecksum());
+			}
+		}
+	}
+
 	/**
 	 *
 	 */
@@ -118,7 +154,7 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 			$file->setMime($mime);
 			$file->setType('js');
 			$file->setAttributes($attribs);
-			if (in_array($file->file, $this->options->ignored_files)) {
+			if (in_array($file->path, $this->options->ignored_files) || in_array($file->file, $this->options->ignored_files)) {
 				$file->setIgnored(true);
 			}
 			$this->script_file_sorter->addFile($file);
@@ -167,6 +203,17 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 	}
 
 	/**
+	 *
+	 */
+	public function process()
+	{
+		parent::process();
+		if ($this->options->convert_page_images) {
+			$this->processImages();
+		}
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function populate()
@@ -175,9 +222,11 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 		$this->populateScriptFiles();
 		$this->populateInlineStyles();
 		$this->populateStyleFiles();
+		$this->populateImages();
 
 		$markup = ($this->document->getDocument()->htmlOuter());
-		$markup = preg_replace('/(<(base|img|br|meta|area|input|link|col|hr|param|frame|isindex)+([\s]+[\S]+[\s]*=[\s]*("([^"]*)"|\'([^\']*)\'))*[\s]*)>/imx','$1/>',$markup);
+		//TODO fix so that regex works with data uris?
+		$markup = preg_replace('/(<(base|img|br|meta|area|input|link|col|hr|param|frame|isindex)+([\s]+[\S]+[\s]*=[\s]*("([^"]*)"|\'([^\']*)\'))*[\s]*)>/imx', '$1/>', $markup);
 		JResponse::setBody($markup);
 	}
 
@@ -203,16 +252,15 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 						foreach ($file->getAttributes() as $attrib_key => $attrib_value) {
 							$attribs[] = $attrib_key . '="' . $attrib_value . '"';
 						}
-						$outputlinks[] = '<link rel="stylesheet" href="' . $file->getFile() . '" type="' . $file->getMime() . '" ' . implode(' ', $attribs) . ' />' . PHP_EOL;
+						$outputlinks[] = '<link rel="stylesheet" href="' . $file->getUrl() . '" type="' . $file->getMime() . '" ' . implode(' ', $attribs) . ' />' . PHP_EOL;
 					}
 				}
 			}
 			pq('head', $this->document)->prepend(implode("\n", $outputlinks));
 		} else {
-			$links = array();
+			$links            = array();
 			$stylesheet_links = pq($this->prefix . ' link[href][rel=stylesheet]', $this->document);
-			foreach($stylesheet_links as $stylesheet_link)
-			{
+			foreach ($stylesheet_links as $stylesheet_link) {
 				$foo = pq($stylesheet_link, $this->document)->markup();
 			}
 			pq('head', $this->document)->prepend($stylesheet_links);
@@ -264,7 +312,7 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 						foreach ($file->getAttributes() as $attrib_key => $attrib_value) {
 							$attribs[] = $attrib_key . '="' . $attrib_value . '"';
 						}
-						$outputlinks[] = '<script src="' . $file->getFile() . '" type="' . $file->getMime() . '" ' . implode(' ', $attribs) . '></script>' . PHP_EOL;
+						$outputlinks[] = '<script src="' . $file->getUrl() . '" type="' . $file->getMime() . '" ' . implode(' ', $attribs) . '></script>' . PHP_EOL;
 					}
 				}
 			}
@@ -296,6 +344,27 @@ class RokBooster_Joomla_PhpQueryScanStrategy extends RokBooster_Joomla_AbstractS
 		} else {
 			$script_block = pq($this->prefix . 'script:not([src])[type=text/javascript]', $this->document);
 			pq('head', $this->document)->prepend($script_block);
+		}
+	}
+
+	protected function populateImages()
+	{
+		if ($this->options->convert_page_images) {
+			$image_links = pq('img[src]', $this->document);
+			foreach ($image_links as $image) {
+				$attribs = pq($image, $this->document)->attr('*');
+				$src     = $attribs['src'];
+				if (array_key_exists($src, $this->imageFileGroups) && $this->cache->doesCacheExist($this->imageFileGroups[$src]->getChecksum())) {
+					$image_file_group = $this->imageFileGroups[$src];
+					/** @var $image_file RokBooster_Compressor_File */
+					$image_file  = $image_file_group[0];
+					$fileattribs = array();
+					foreach ($image_file->getAttributes() as $attrib_key => $attrib_value) {
+						$fileattribs[] = $attrib_key . '="' . $attrib_value . '"';
+					}
+					pq($image)->replaceWith(sprintf('<img src="data:%s;base64,%s" %s />', $image_file_group->getMime(), $this->cache->getCacheContent($image_file_group->getChecksum()), implode(' ', $fileattribs)));
+				}
+			}
 		}
 	}
 }

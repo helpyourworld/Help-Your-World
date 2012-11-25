@@ -9,39 +9,34 @@
 /* Text Colors */
 #rt-top, #rt-header, #rt-navigation {color: #444;} 
 #rt-top a:hover, #rt-header a:hover, #rt-navigation a:hover {color: #fff;}
-#rt-header-surround .menutop li > .item, .menutop .fusion-submenu-wrapper li > .item {color: #fff;}
-#rt-header-surround .menutop ul li.root > .item, #rt-header-surround .menutop li.active.root > .item, #rt-header-surround .menutop li.active.root.f-mainparent-itemfocus > .item, #rt-header-surround .menutop li.root:hover > .item, #rt-header-surround .menutop li.root.f-mainparent-itemfocus > .item, #rt-header-surround .rt-splitmenu .menutop li.active > .item, #rt-header-surround .rt-splitmenu .menutop li:hover > .item, #rt-header-surround .rt-splicemenu .menutop li.active > .item, #rt-header-surround .rt-splicemenu .menutop li:hover > .item {color: #fff;text-shadow: -1px -1px 1px #484848;}
+#rt-header-surround .menutop ul li.root > .item, #rt-header-surround .menutop li.active.root > .item, #rt-header-surround .menutop li.active.root.f-mainparent-itemfocus > .item, #rt-header-surround .menutop li.root:hover > .item, #rt-header-surround .menutop li.root.f-mainparent-itemfocus > .item, #rt-header-surround .rt-splitmenu .menutop li.active > .item, #rt-header-surround .rt-splitmenu .menutop li:hover > .item, #rt-header-surround .rt-splicemenu .menutop li.active > .item, #rt-header-surround .rt-splicemenu .menutop li:hover > .item {color: #fff;}
 #rt-header-surround .menupillstyle-default .menutop ul li.root > .item, #rt-header-surround .menupillstyle-default .menutop li.active.root > .item, #rt-header-surround .menupillstyle-default .menutop li.active.root.f-mainparent-itemfocus > .item, #rt-header-surround .menupillstyle-default .menutop li.root:hover > .item, #rt-header-surround .menupillstyle-default .menutop li.root.f-mainparent-itemfocus > .item, #rt-header-surround .menupillstyle-default .rt-splitmenu .menutop li.active > .item, #rt-header-surround .menupillstyle-default .rt-splitmenu .menutop li:hover > .item, #rt-header-surround .menupillstyle-default .rt-splicemenu .menutop li.active > .item, #rt-header-surround .menupillstyle-default .rt-splicemenu .menutop li:hover > .item, #rt-header-surround .rt-splicemenu-children .menu li.active > .item, #rt-header-surround .rt-splicemenu-children .menu li:hover > .item {color: #111;text-shadow: 1px 1px 1px #eee;}
 
 /* Logo */
 #rt-logo {background: url(../images/logo/light/logo.png) 0 0 no-repeat;}
 
 /* Structure */
-#rt-header-background {background: #f9f9f9; }
-#rt-header-bottom {background: url(../images/header/light/header-bottom.png) 50% 100% repeat-x; height:8px !important;}
+#rt-header-background {background-color:#FAFAFA }
+#rt-top {background: url(../images/header/light/header_slice.png) 0 0 repeat-x; }
 #rt-top h3 {
   margin:0;
   color:#87c1e6;
-}
-#rt-top .rt-grid-2 {
-  border-right:1px solid #ccc;
-  width:150px;
-}
-#rt-top .rt-grid-3 {
-  width:247px;
-  border-right:1px solid #ccc;
-}
-#rt-top .rt-grid-5 {
-  width:330px;
+  font-size:13pt;
+  font-weight:normal;
 }
 #rt-top .rt-block {
-  height: 72px;
-  margin: 10px 0 0;
+  margin:5px 0 0;
   padding:0;
 }
-#rt-top .menu-block {
-  margin:0;
-  padding:0;
+#rt-top .rt-grid-2 {
+  color:#666;
+}
+#rt-top .rt-grid-2 .rt-module-surround {
+  margin-top:11px;
+}
+#rt-top .rt-grid-3 {
+}
+#rt-top .rt-grid-5 {
 }
 #rt-header {
   background-image:url(../images/header/light/header_background.png);
@@ -50,10 +45,94 @@
   height:271px;
 }
 
-/* Top Menu */
-#rt-top .rt-menubar {background-color: #53ADDF;}
-#rt-navigation {background: #dadada;}
-.menutop .fusion-submenu-wrapper {background: #ddd;border: 1px solid #fff;}
+/* Dropdown Menu */
+#rt-top .rt-menubar {
+  top:6px;
+}
+#rt-top .rt-menubar .menutop {
+  padding:0 4px;
+}
+.menutop .fusion-submenu-wrapper {
+  padding-top:22px;
+  background:transparent;
+}
+#rt-top .rt-menubar .menutop li.root {
+  padding:0;
+}
+#rt-top .rt-menubar .menutop li.root ul.level2 li {
+  padding:0;
+  border-top:1px solid #CCC;
+}
+#rt-top .rt-menubar .menutop li.root ul.level2 {
+  background-color:#F8F8F8;
+}
+#rt-top .rt-menubar .menutop li.root ul.level2 li:first-child {
+  border-top:none;
+}
+#rt-top .rt-menubar .menutop li.root > .item,
+#rt-top .rt-menubar .menutop li.root ul.level2 li > .item {
+  font-size:13pt;
+  text-transform: none;
+  color: #87C1E6;
+  line-height:1em;
+  padding:0 4px;
+  border-radius:0;
+}
+#rt-top .rt-menubar .menutop li.root ul.level2 li > .item {
+  padding:4px;
+}
+#rt-top .rt-menubar .menutop li.root > .item span {
+  text-shadow:none;
+  padding:0;
+}
+#rt-top .rt-menubar .menutop li.root > .item span .daddyicon {
+  display:none;
+}
+#rt-top .rt-menubar .menutop li.root > .item em,
+#rt-top .rt-menubar .menutop li.root ul.level2 li > .item em {
+  text-transform: none;
+  color: #666;
+  font-size:12px;
+  margin-top:0;
+  font-weight: normal;
+  line-height:1.7em;
+}
+
+#rt-top .rt-menubar .menutop ul li > .item:hover span {
+  margin:0;
+}
+
+/* Horizontal menu */
+#rt-top ._menu .rt-block {
+  background-image:url('../images/header/light/horizontal_menu_bg.png');
+  background-repeat:no-repeat;
+  width:259px;
+  margin:0 auto;
+  overflow:hidden;
+}
+#rt-top ._menu ul {
+}
+#rt-top ._menu ul li {
+  float:left;
+  background:none;
+  padding:4px;
+  margin:0 9px;
+}
+#rt-top ._menu ul li a {
+  border-radius:0;
+  line-height: 1em;
+  color:#FFF;
+  font-weight:normal;
+}
+#rt-top ._menu ul li a:hover {
+  background:none;
+  color:#EEE;
+}
+#rt-top ._menu ul li a span {
+  background:none;
+  padding:0;
+}
+
 .fusion-pill-l {background: url(../images/header/light/pill-l.png) 0 0 no-repeat;}
 .fusion-pill-r {background: url(../images/header/light/pill-r.png) 100% 0 no-repeat;}
 .menupillstyle-blue .fusion-pill-l {background-image: url(../images/accents/blue/pill-l.png);}
@@ -99,7 +178,7 @@
 .menupillstyle-yellow .menutop li.active.root, .menupillstyle-yellow .rt-splitmenu .menutop li.active, .menupillstyle-yellow .rt-splicemenu .menutop li.active {background-image: url(../images/accents/yellow/pill-l.png);}
 .menupillstyle-yellow .menutop li.active.root > .item, .menupillstyle-yellow .rt-splitmenu .menutop li.active .item, .menupillstyle-yellow .rt-splicemenu .menutop li.active .item {background-image: url(../images/accents/yellow/pill-r.png);}
 .menutop li.parent.root .item span .daddyicon, .menutop li.root .daddy.item .daddyicon, .menutop ul li > .daddy span {background-image: url(../images/header/light/menu-arrows.png);}
-.menutop ul li > .item:hover, .menutop ul li.active > .item, .menutop ul li.f-menuparent-itemfocus > .item {background: #eee;border-top: 1px solid #ccc;border-bottom: 1px solid #fafafa;}
+.menutop ul li > .item:hover, .menutop ul li.active > .item, .menutop ul li.f-menuparent-itemfocus > .item {background: #eee;}
 .rt-menubar .arrow-indicator {background: url(../images/header/light/menu-active.png) 0 0 no-repeat;}
 #rt-navigation .menu li.active .item span, #rt-navigation .rt-splicemenu-children .menu li:hover > .item span, #rt-navigation .fusion-pill-l {background: #eee;border-top: 1px solid #ccc;border-bottom: 1px solid #fff;}
 

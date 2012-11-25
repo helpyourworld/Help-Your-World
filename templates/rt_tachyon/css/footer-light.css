@@ -12,7 +12,15 @@
 #rt-bottom a:hover, #rt-footer a:hover, #rt-copyright a:hover, #gantry-totop:hover .totop-desc {color: #000;}
 
 /* Structure */
-#rt-bottom {background: #E3E5E6;border-top: 1px solid #dadada;}
+#rt-footer-surround {
+  background:url(../images/footer/light/texturesquare.png) repeat;
+}
+#rt-bottom {
+  background:url(../images/footer/light/ripped.png) repeat-x;
+}
+#rt-bottom img {
+  padding-top:30px;
+}
 body, #rt-footer, #rt-copyright {background: #D6D8DB url(../images/footer/light/footer-bg.png);}
 #rt-footer {border-top: 1px solid #ccc;}
 .bodylevel-high #rt-bottom .rt-grid-1, .bodylevel-high #rt-bottom .rt-grid-2, .bodylevel-high #rt-bottom .rt-grid-3, .bodylevel-high #rt-bottom .rt-grid-4, .bodylevel-high #rt-bottom .rt-grid-5, .bodylevel-high #rt-bottom .rt-grid-6, .bodylevel-high #rt-bottom .rt-grid-7, .bodylevel-high #rt-bottom .rt-grid-8, .bodylevel-high #rt-bottom .rt-grid-9, .bodylevel-high #rt-bottom .rt-grid-10, .bodylevel-high #rt-bottom .rt-grid-11 {background: url(../images/footer/light/bottomdiv-l.png) 100% -25px no-repeat;}

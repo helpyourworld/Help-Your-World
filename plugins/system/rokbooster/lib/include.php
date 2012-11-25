@@ -2,7 +2,7 @@
 /**
  * @version   $Id: include.php 314 2012-04-27 02:48:00Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
@@ -37,5 +37,5 @@ if (!defined('ROKBOOSTER_LIB')) {
     /**
      * define rokbooster library dir
      */
-    define('ROKBOOSTER_LIB', '1.0.2');
+    define('ROKBOOSTER_LIB', '1.1.0');
 }

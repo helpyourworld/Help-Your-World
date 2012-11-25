@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -34,7 +34,7 @@ class RokSubfieldForm extends JForm
     public function makeSubfieldsVisable(){
         $subs = $this->xml->xpath('//subfields/fieldset/field');
         foreach($subs as $sub){
-            $field =& $this->xml->config[0]->fields->fieldset[0]->addChild('field');
+            $field = $this->xml->config[0]->fields->fieldset[0]->addChild('field');
             foreach($sub->attributes() as $aname=>$aval){
                 $field->addAttribute($aname,$aval);
             }

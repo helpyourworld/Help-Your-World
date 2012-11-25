@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   $Id: AbstractStrategy.php 323 2012-04-27 07:19:52Z btowles $
+ * @version   $Id: AbstractStrategy.php 4882 2012-11-01 01:55:29Z btowles $
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 
@@ -114,7 +114,8 @@ abstract class RokBooster_Compressor_AbstractStrategy implements RokBooster_Comp
 		//get links data
 		foreach ($files as &$file) {
 			/** @var $file RokBooster_Compressor_File */
-			$tmp_content = RokBooster_Compressor_Processor_JSMin::_minify($file->getContent());
+			//$tmp_content = RokBooster_Compressor_Processor_JSMin::_minify($file->getContent());
+			$tmp_content = $file->getContent();
 			$content .= $this->cleanEndLines($tmp_content) . ' ';
 		}
 		$files->setResult($content);
@@ -149,6 +150,7 @@ abstract class RokBooster_Compressor_AbstractStrategy implements RokBooster_Comp
 						$compiled_content = RokBooster_Compressor_CssCompiler::compile($file->content, dirname($file->getPath()));
 						$file->content    = $compiled_content;
 					} catch (Exception $e) {
+						JLog::add(JText::sprintf('PLG_SYSTEM_ROKBOOSTER_CSS_FILE_COMPILE_ERROR',$e->getMessage(),$file->path), JLog::ERROR, 'rokbooster');
 					}
 				}
 				$file->content = preg_replace('~@import\s?[\'"]([^\'"]+?)[\'"];~', '@import url("$1");', $file->content);
@@ -161,6 +163,7 @@ abstract class RokBooster_Compressor_AbstractStrategy implements RokBooster_Comp
 			}
 		}
 
+		//$files->setResult($content);
 		$files->setResult(RokBooster_Compressor_Processor_YUI::_minify($content));
 	}
 
@@ -177,6 +180,7 @@ abstract class RokBooster_Compressor_AbstractStrategy implements RokBooster_Comp
 				$compiled_content = RokBooster_Compressor_CssCompiler::compile($content, $this->options->root_path);
 				$content          = $compiled_content;
 			} catch (Exception $e) {
+				JLog::add(JText::sprintf('PLG_SYSTEM_ROKBOOSTER_INLIN_CSS_COMPILE_ERROR',$e->getMessage()), JLog::ERROR, 'rokbooster');
 			}
 		}
 		$content = $this->cleanEndLines($content);
@@ -192,9 +196,24 @@ abstract class RokBooster_Compressor_AbstractStrategy implements RokBooster_Comp
 	protected function correctUrl($matches)
 	{
 		if (!preg_match('~^(/|http)~', $matches[1])) {
-			$cssRootPath = preg_replace('~/[^/]+\.css~', '/', $this->current_css_url);
+			$current_uri = parse_url($this->current_css_url);
+			$cssRootPath = preg_replace('~/[^/]+\.css~', '/', $current_uri['path']);
 			$imagePath   = $cssRootPath . $matches[1];
 			$imagePath   = $this->normalize_path($imagePath);
+
+			if ($this->options->convert_css_images) {
+				$fullPath = RokBooster_Compressor_File::getFileLink($imagePath, $this->options->root_url, $this->options->root_path);
+				$ext      = strtolower(pathinfo(basename($fullPath), PATHINFO_EXTENSION));
+				if (in_array($ext, array('gif', 'jpg', 'jpeg', 'png')) && is_file($fullPath)) {
+					list(, , , , , , , $size, , $mtime, $ctime, ,) = @stat($fullPath);
+					// TODO replace size compare with property
+					if ($size <= $this->options->max_data_uri_image_size) {
+						$encoded   = base64_encode(file_get_contents($fullPath));
+						$mime      = RokBooster_Compressor_File::mime_content_type($fullPath);
+						$imagePath = sprintf('data:%s;base64,%s', $mime, $encoded);
+					}
+				}
+			}
 			return 'url(\'' . $imagePath . '\')';
 		} else {
 			return $matches[0];

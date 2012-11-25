@@ -24,30 +24,37 @@ class JFormFieldBreak extends JFormField
 	 * @var string
 	 */
 	protected $type = 'Break';
+	public static $assets_loaded = false;
 
-	/**
-	 * @return string
-	 */
-	protected function getLabel()
-	{
-		$label = $this->type;
+    /**
+   	 * @return string
+   	 */
+   	protected function getLabel()
+   	{
+           $doc = JFactory::getDocument();
+           $doc->addStyleDeclaration(".rok-break {border-bottom:1px solid #eee;font-size:16px;color:#0088CC;margin-top:15px;padding:2px 0;width:100%}");
 
-		if (isset($this->element['label']) && !empty($this->element['label'])) {
-			$label = JText::_((string)$this->element['label']);
-			$css   = (string)$this->element['class'];
-			return '<div class="booster-break ' . $css . '">' . $label . '</label>';
-		} else {
-			return;
-		}
+           if (isset($this->element['label']) && !empty($this->element['label'])) {
+               $label = JText::_((string)$this->element['label']);
+               $css   = (string)$this->element['class'];
+               $version = new JVersion();
+               if (version_compare($version->getShortVersion(), '3.0', '>=')) {
+                   return '<div class="rok-break ' . $css . '">' . $label . '</div>';
+               } else {
+                   return '<label class="rok-break ' . $css . '">' . $label . '</label>';
+               }
+           } else {
+               return;
+           }
 
-	}
+   	}
 
-	/**
-	 * @return mixed
-	 */
-	protected function getInput()
-	{
-		return;
-	}
+   	/**
+   	 * @return mixed
+   	 */
+   	protected function getInput()
+   	{
+           return;
+   	}
 
 }

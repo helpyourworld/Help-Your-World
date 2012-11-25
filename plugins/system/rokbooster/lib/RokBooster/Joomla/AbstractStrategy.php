@@ -2,7 +2,7 @@
 /**
  * @version   $Id$
  * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
+ * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
  */
 defined('ROKBOOSTER_LIB') or die('Restricted access');
@@ -51,6 +51,23 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	 * @var RokBooster_Compressor_InlineGroup[]
 	 */
 	protected $render_inline_styles;
+
+	/**
+	 * @var RokBooster_Compressor_File[]
+	 */
+	protected $images = array();
+
+	/**
+	 * @var RokBooster_Compressor_FileGroup[]
+	 */
+	protected $encode_image_file_groups = array();
+
+	/**
+	 * @var RokBooster_Compressor_FileGroup[]
+	 */
+	protected $imageFileGroups = array();
+
+
 
 	/**
 	 * @var RokBooster_Compressor_ICache
@@ -188,17 +205,17 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	public function process()
 	{
 		if ($this->options->minify_js) {
-			$this->processScriptFiles();
+			$this->processScripts();
 		}
 		if ($this->options->minify_css) {
-			$this->processStyleFiles();
+			$this->processStyles();
 		}
 		if ($this->options->inline_js) {
-			$this->processInlineScript();
+			$this->processInlineScripts();
 
 		}
 		if ($this->options->inline_css) {
-			$this->processInlineStyle();
+			$this->processInlineStyles();
 		}
 	}
 
@@ -206,7 +223,7 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	/**
 	 *
 	 */
-	protected function processScriptFiles()
+	protected function processScripts()
 	{
 		if (isset($this->render_script_file_groups) && is_array($this->render_script_file_groups)) {
 			foreach ($this->render_script_file_groups as $filegroup) {
@@ -221,7 +238,7 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	/**
 	 *
 	 */
-	protected function processInlineScript()
+	protected function processInlineScripts()
 	{
 		if (isset($this->render_inline_scripts) && is_array($this->render_inline_scripts)) {
 			foreach ($this->render_inline_scripts as $inlinegroup) {
@@ -235,7 +252,7 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	/**
 	 *
 	 */
-	protected function processStyleFiles()
+	protected function processStyles()
 	{
 		if (isset($this->render_style_file_groups) && is_array($this->render_style_file_groups)) {
 			foreach ($this->render_style_file_groups as $filegroup) {
@@ -250,7 +267,7 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 	/**
 	 *
 	 */
-	protected function processInlineStyle()
+	protected function processInlineStyles()
 	{
 		if (isset($this->render_inline_styles) && is_array($this->render_inline_styles)) {
 			foreach ($this->render_inline_styles as $inlinegroup) {
@@ -260,4 +277,17 @@ abstract class RokBooster_Joomla_AbstractStrategy extends RokBooster_Compressor_
 			}
 		}
 	}
+
+	protected function processImages()
+	{
+		foreach ($this->encode_image_file_groups as $image_group) {
+			/** @var $file RokBooster_Compressor_File */
+			$file = $image_group[0];
+			$image_group->setResult(base64_encode(file_get_contents($file->getPath())));
+			$this->cache->write($image_group->getChecksum(), $image_group->getResult(), false);
+			$this->storeFileInfo($image_group);
+			$this->finishedRendering($image_group->getChecksum());
+		}
+	}
+
 }

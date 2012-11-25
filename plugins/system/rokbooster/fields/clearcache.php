@@ -24,12 +24,20 @@ class JFormFieldClearcache extends JFormField
 	 * @var string
 	 */
 	protected $type = 'Clearcache';
+	public static $assets_loaded = false;
 
 	/**
 	 * @return string
 	 */
 	protected function getInput()
 	{
+
+		if (!self::$assets_loaded){
+			$doc = JFactory::getDocument();
+			$doc->addStyleSheet(JURI::root(true).'/plugins/system/rokbooster/fields/assets/clearcache/css/clearcache.css');
+			$doc->addScript(JURI::root(true).'/plugins/system/rokbooster/fields/assets/clearcache/js/RokBooster.js');
+			self::$assets_loaded = true;
+		}
 
 		$file_cache = new JCache(array(
 		                              'defaultgroup'   => 'rokbooster',

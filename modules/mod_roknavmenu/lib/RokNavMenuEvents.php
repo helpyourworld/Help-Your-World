@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   1.13 July 2, 2012
+ * @version   1.16 September 14, 2012
  * @author    RocketTheme http://www.rockettheme.com
  * @copyright Copyright (C) 2007 - 2012 RocketTheme, LLC
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
@@ -56,7 +56,7 @@ class RokNavMenuEvents extends JPlugin
 
                 $language_path = $theme_info['path'] . "/language";
                 if (JFolder::exists($language_path)){
-                    $language =& JFactory::getLanguage();
+                    $language = JFactory::getLanguage();
                     $language->load($theme_name ,$theme_info['path'], $language->getTag(), true);
                 }
 
